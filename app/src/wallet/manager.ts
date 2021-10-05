@@ -143,3 +143,9 @@ export class WalletManager {
     return false;
   }
 }
+
+const manager = new WalletManager();
+
+export const getWalletManager = () => {
+  return manager;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { WalletManager } from '../wallet';
+import { getWalletManager, WalletManager } from '../wallet';
 import { useWeb3Manager } from './web3Manager';
 
 export interface IWeb3Context {
@@ -25,7 +25,7 @@ interface Props {
 }
 
 export const Web3Provider: React.FC<Props> = (props: Props) => {
-  const walletManager = new WalletManager()
+  const walletManager = getWalletManager()
 
   const {
     setWallet,
