@@ -23,7 +23,7 @@ export const Hero = () => {
       </HeroContent>
       <Stack spacing={2} sx={{ mt: 6 }} direction="row">
         <Button variant="contained" color="primary">
-          Start project
+          Create pool
         </Button>
       </Stack>
     </>
