@@ -1,5 +1,8 @@
 import { IWalletConnector, WalletConnector, WalletManager } from '.';
+import { getLogger } from '../util/logger';
 import { Network } from '../util/types';
+
+const logger = getLogger()
 
 export class WalletConnectorFactory {
   private readonly _walletManager: WalletManager
@@ -19,7 +22,7 @@ export class WalletConnectorFactory {
     const connector = new WalletConnector(this._walletManager, opts, meta)
 
     if (!session) {
-      connector.createSession().then(() => console.log('IWalletConnector connected', connector.uri))
+      connector.createSession().then(() => logger.info('IWalletConnector connected', connector.uri)())
     }
 
     return connector

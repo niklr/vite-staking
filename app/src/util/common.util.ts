@@ -5,7 +5,6 @@ export abstract class CommonUtil {
 
   static isNullOrWhitespace(value?: Maybe<string>): boolean {
     if (!CommonUtil.isString(value)) {
-      // console.log('Expected a string but got: ', value);
       return true;
     } else {
       return value === null || value === undefined || value.trim() === '';

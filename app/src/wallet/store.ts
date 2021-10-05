@@ -1,6 +1,9 @@
 import { SessionWallet, Wallet, WebWallet } from '.';
 import { CommonConstants } from '../common/constants';
+import { getLogger } from '../util/logger';
 import { WalletType } from './types';
+
+const logger = getLogger()
 
 export class WalletStore {
 
@@ -21,7 +24,7 @@ export class WalletStore {
         data = sessionStorage.getItem(this._sessionWalletKey);
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err)();
       return undefined;
     }
 
@@ -32,7 +35,7 @@ export class WalletStore {
     try {
       return Wallet.fromJS(JSON.parse(data));
     } catch (err) {
-      console.log(err);
+      logger.error(err)();
       return undefined;
     }
   }
@@ -52,7 +55,7 @@ export class WalletStore {
           throw new Error(`Wallet type '${data.type}' is not supported.`)
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err)();
     }
   }
 }

@@ -1,6 +1,9 @@
 import { wallet } from '@vite/vitejs';
 import { SessionWallet, WalletAccount, WebWallet, WebWalletAccount } from '.';
+import { getLogger } from '../util/logger';
 import { WalletStore } from './store';
+
+const logger = getLogger()
 
 export class WalletManager {
   private readonly _store: WalletStore;
@@ -110,7 +113,7 @@ export class WalletManager {
       if (new Date().getTime() - wallet.timestamp < 1000 * 60 * 10) {
         return wallet.session;
       } else {
-        console.log('Found expired session.', wallet);
+        logger.info('Found expired session.', wallet)();
       }
     }
     return undefined;

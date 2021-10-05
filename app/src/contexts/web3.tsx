@@ -1,11 +1,13 @@
-import React from 'react';
-import { getWalletManager, WalletManager } from '../wallet';
-import { useWeb3Manager } from './web3Manager';
+import React, { useState } from 'react';
+import { getNetworkManager } from '../common/network';
+import { Network } from '../util/types';
+import { getWalletManager, SessionWallet, WebWallet } from '../wallet';
 
 export interface IWeb3Context {
   setError: (error: Error) => void,
-  error?: Error,
-  walletManager: WalletManager
+  error?: Maybe<Error>,
+  wallet?: Maybe<WebWallet | SessionWallet>
+  network?: Maybe<Network>
 }
 
 const Web3Context = React.createContext<Maybe<IWeb3Context>>(undefined)
@@ -25,20 +27,21 @@ interface Props {
 }
 
 export const Web3Provider: React.FC<Props> = (props: Props) => {
+  const [error, setError] = useState<Maybe<Error>>(null)
+  const [wallet, setWallet] = useState<Maybe<WebWallet | SessionWallet>>(null)
+  const [network, setNetwork] = useState<Maybe<Network>>(null)
+
   const walletManager = getWalletManager()
-
-  const {
-    setWallet,
-    setError,
-    error
-  } = useWeb3Manager(walletManager.getWallet())
-
   walletManager.onSetWalletCallback = setWallet
+
+  const networkManager = getNetworkManager()
+  networkManager.onSetNetworkCallback = setNetwork
 
   const context: IWeb3Context = {
     setError,
     error,
-    walletManager
+    wallet,
+    network
   }
 
   return (

@@ -1,7 +1,10 @@
 import { ViteAPI } from "@vite/vitejs";
+import { getLogger } from "../util/logger";
 import { Network } from "../util/types";
 import { getWalletManager, IWalletConnector, WalletConnectorFactory, WalletManager } from "../wallet";
 const { WS_RPC } = require('@vite/vitejs-ws');
+
+const logger = getLogger();
 
 const providerTimeout = 60000;
 const providerOptions = { retryTimes: 10, retryInterval: 5000 };
@@ -33,13 +36,13 @@ export class ViteClient {
     this._provider = new WS_RPC(network.rpcUrl, providerTimeout, providerOptions);
     let isResolved = false;
     this._provider.on('error', (err: any) => {
-      console.log(err);
+      logger.error(err)();
       if (isResolved) return;
       reject(err);
       this._isConnected = false;
     });
     this._client = new ViteAPI(this._provider, () => {
-      console.log(`ViteAPI connected to ${this._provider.path}`);
+      logger.info(`ViteAPI connected to ${this._provider.path}`)();
       isResolved = true;
       resolve();
       this._isConnected = true;
@@ -47,7 +50,7 @@ export class ViteClient {
   });
 
   dispose(): void {
-    console.log("Disposing ViteClient");
+    logger.info("Disposing ViteClient")();
     this._provider?.disconnect();
     this._isConnected = false;
   }

@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { Networks } from '../common/constants';
+import { getNetworkManager } from '../common/network';
 import { MainLoading } from '../features/main/components/loading';
-import { WalletManager } from '../wallet';
+import { getLogger } from '../util/logger';
+import { Network } from '../util/types';
+import { getCommonContext } from './common';
 import { useWeb3Context } from './web3';
+
+const logger = getLogger()
 
 export interface IConnectedWeb3Context {
   account?: string
-  walletManager: WalletManager
+  network?: Maybe<Network>
 }
 
 const ConnectedWeb3Context = React.createContext<Maybe<IConnectedWeb3Context>>(undefined)
@@ -33,29 +39,39 @@ interface Props {
  */
 export const ConnectedWeb3: React.FC<Props> = (props: Props) => {
   const [connection, setConnection] = useState<IConnectedWeb3Context | null>(null)
-  const context = useWeb3Context()
+  const web3Context = useWeb3Context()
+  const commonContext = getCommonContext()
 
-  const { walletManager } = context
+  const { wallet, network } = web3Context
 
-  const wallet = walletManager.getWallet()
+  useEffect(() => {
+    if (!network) {
+      const networkManager = getNetworkManager();
+      networkManager.setNetwork(Networks.find(e => e.id === 2))
+      logger.info("Network:", networkManager.getNetwork())()
+    }
+  }, [network])
 
   useEffect(() => {
     const value = {
       account: wallet?.active?.address,
-      walletManager
+      network
     }
 
-    console.log('ConnectedWeb3.account', wallet?.active?.address)
+    logger.info('ConnectedWeb3.account', wallet?.active?.address)()
 
     const initAsync = async () => {
-      console.log('ConnectedWeb3.initAsync')
-      setConnection(value)
+      if (network) {
+        logger.info('ConnectedWeb3.initAsync')()
+        await commonContext.initAsync(network)
+        setConnection(value)
+      }
     }
     initAsync()
     return () => {
-      // provider.dispose()
+      commonContext.dispose()
     }
-  }, [wallet, walletManager])
+  }, [wallet, network, commonContext])
 
   if (!connection) {
     return MainLoading()
