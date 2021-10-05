@@ -1,10 +1,9 @@
 import React from 'react';
+import { Main } from './features/main/components/main';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div>
-      Hello world
-    </div>
+    <Main />
   );
 }
 
