@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppBar, Button, Chip, styled, Toolbar, tooltipClasses, Typography } from '@mui/material';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { CommonConstants } from '../../../../common/constants';
 import { useConnectedWeb3Context } from '../../../../contexts/connectedWeb3';
 import { CommonUtil } from '../../../../util/common.util';
@@ -51,7 +51,7 @@ export const Header: React.FC = (props: any) => {
           {context.account ? (
             <>
               <BootstrapTooltip sx={{ [`& .${tooltipClasses.tooltip}`]: { maxWidth: "none" } }} title={context.account} placement="bottom" arrow>
-                <Chip sx={{ color: "white", '& .MuiChip-icon': { color: "white" } }} icon={<AccountCircleOutlinedIcon />} label={truncateAddress(context.account)} variant="outlined" />
+                <Chip sx={{ color: "white", '& .MuiChip-icon': { color: "white" } }} icon={<AccountCircleIcon />} label={truncateAddress(context.account)} variant="outlined" />
               </BootstrapTooltip >
               <Button color="inherit" onClick={handleClickLogout}>
                 Logout
