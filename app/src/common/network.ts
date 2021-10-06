@@ -1,4 +1,8 @@
+import { getLogger } from "../util/logger";
 import { Network } from "../util/types";
+import { Networks } from "./constants";
+
+const logger = getLogger();
 
 export class NetworkManager {
   private _network?: Maybe<Network>;
@@ -17,6 +21,16 @@ export class NetworkManager {
     if (this._setNetworkCallback) {
       this._setNetworkCallback(this._network);
     }
+  }
+
+  getNetworks(): Network[] {
+    try {
+      const ids = process.env.REACT_APP_NETWORKS?.split(",").map(e => Number(e));
+      return Networks.filter(e => ids?.includes(e.id))
+    } catch (error) {
+      logger.error(error)
+    }
+    return Networks;
   }
 }
 

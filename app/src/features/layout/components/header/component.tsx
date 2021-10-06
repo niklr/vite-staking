@@ -6,6 +6,7 @@ import { useConnectedWeb3Context } from '../../../../contexts/connectedWeb3';
 import { CommonUtil } from '../../../../util/common.util';
 import { LoginDialog } from '../../../main/components/login';
 import { BootstrapTooltip } from '../../../common/components/tooltip';
+import { NetworkList } from '../../../main/components/network-list';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -46,6 +47,7 @@ export const Header: React.FC = (props: any) => {
           <TitleTypography variant="h6">
             {CommonConstants.APP_NAME}
           </TitleTypography>
+          <NetworkList></NetworkList>
           {context.account ? (
             <>
               <BootstrapTooltip sx={{ [`& .${tooltipClasses.tooltip}`]: { maxWidth: "none" } }} title={context.account} placement="bottom" arrow>

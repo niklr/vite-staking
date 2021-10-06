@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button, Container, Stack, styled, Typography } from '@mui/material';
+import { CommonConstants } from '../../../../common/constants';
 
 const HeroContent = styled('div')(
   ({ theme }) => `
@@ -17,7 +18,7 @@ export const Hero = () => {
       <HeroContent>
         <Container maxWidth="sm">
           <Typography variant="h5" align="center" color="textSecondary" paragraph>
-            VITE Staking
+            {CommonConstants.APP_NAME}
           </Typography>
         </Container>
       </HeroContent>
