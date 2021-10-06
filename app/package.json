@@ -6,6 +6,7 @@
     "@apollo/client": "^3.4.16",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
+    "@mui/icons-material": "^5.0.1",
     "@mui/lab": "^5.0.0-alpha.49",
     "@mui/material": "^5.0.2",
     "@vite/connector": "^0.0.2",

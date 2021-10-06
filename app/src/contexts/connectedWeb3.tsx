@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Networks } from '../common/constants';
 import { getNetworkManager } from '../common/network';
 import { MainLoading } from '../features/main/components/loading';
 import { getLogger } from '../util/logger';
 import { Network } from '../util/types';
+import { getWalletManager } from '../wallet';
 import { getCommonContext } from './common';
 import { useWeb3Context } from './web3';
 
@@ -12,6 +13,7 @@ const logger = getLogger()
 export interface IConnectedWeb3Context {
   account?: string
   network?: Maybe<Network>
+  logout: () => void
 }
 
 const ConnectedWeb3Context = React.createContext<Maybe<IConnectedWeb3Context>>(undefined)
@@ -45,17 +47,31 @@ export const ConnectedWeb3: React.FC<Props> = (props: Props) => {
   const { wallet, network } = web3Context
 
   useEffect(() => {
+    if (!wallet) {
+      const walletManager = getWalletManager()
+      walletManager.initWallet()
+    }
+  }, [wallet])
+
+  useEffect(() => {
     if (!network) {
-      const networkManager = getNetworkManager();
+      const networkManager = getNetworkManager()
       networkManager.setNetwork(Networks.find(e => e.id === 2))
       logger.info("Network:", networkManager.getNetwork())()
     }
   }, [network])
 
+  const logout = useCallback(() => {
+    const walletManager = getWalletManager()
+    walletManager.removeWallet()
+    window.location.reload()
+  }, [])
+
   useEffect(() => {
     const value = {
       account: wallet?.active?.address,
-      network
+      network,
+      logout
     }
 
     logger.info('ConnectedWeb3.account', wallet?.active?.address)()
@@ -71,7 +87,7 @@ export const ConnectedWeb3: React.FC<Props> = (props: Props) => {
     return () => {
       commonContext.dispose()
     }
-  }, [wallet, network, commonContext])
+  }, [wallet, network, logout, commonContext])
 
   if (!connection) {
     return MainLoading()

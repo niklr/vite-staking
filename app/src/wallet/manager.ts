@@ -13,14 +13,14 @@ export class WalletManager {
 
   constructor() {
     this._store = new WalletStore();
-    this.initWallet();
   }
 
-  private initWallet(): void {
+  initWallet(): void {
     const wallet = this._store.getItem();
     if (wallet) {
       this._wallet = wallet;
       this._mnemonicDeriveIndex = wallet.accounts.length;
+      this.updateWallet();
     }
   }
 

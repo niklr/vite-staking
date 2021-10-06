@@ -28,6 +28,7 @@ export class WalletConnector extends Connector implements IWalletConnector {
     this.on('disconnect', (err: any, payload: any) => {
       logger.info('WalletConnector.disconnect', err, payload)()
       this.stopBizHeartBeat()
+      this._walletManager.removeWallet()
     });
     this.on('session_update', (err: any, payload: any) => {
       logger.info('WalletConnector.session_update', err, payload)()

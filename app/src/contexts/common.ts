@@ -19,6 +19,10 @@ export class CommonContext {
     logger.info("Disposing CommonContext")()
     this._vite.dispose()
   }
+
+  get vite(): ViteClient {
+    return this._vite;
+  }
 }
 
 const context = new CommonContext();

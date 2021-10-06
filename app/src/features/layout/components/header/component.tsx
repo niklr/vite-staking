@@ -1,6 +1,11 @@
 import React from 'react';
-import { AppBar, styled, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Chip, styled, Toolbar, tooltipClasses, Typography } from '@mui/material';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { CommonConstants } from '../../../../common/constants';
+import { useConnectedWeb3Context } from '../../../../contexts/connectedWeb3';
+import { CommonUtil } from '../../../../util/common.util';
+import { LoginDialog } from '../../../main/components/login';
+import { BootstrapTooltip } from '../../../common/components/tooltip';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -14,6 +19,25 @@ const TitleTypography = styled(Typography)(
 `);
 
 export const Header: React.FC = (props: any) => {
+  const context = useConnectedWeb3Context();
+  const [loginOpen, setLoginOpen] = React.useState(false);
+
+  const handleClickLogin = () => {
+    setLoginOpen(true);
+  };
+
+  const handleClickLogout = () => {
+    context.logout();
+  };
+
+  const handleLoginClose = () => {
+    setLoginOpen(false);
+  };
+
+  const truncateAddress = (address?: string) => {
+    return CommonUtil.truncateStringInTheMiddle(address, 10, 5)
+  }
+
   return (
     <Root>
       <AppBar position="static" color="primary">
@@ -22,8 +46,25 @@ export const Header: React.FC = (props: any) => {
           <TitleTypography variant="h6">
             {CommonConstants.APP_NAME}
           </TitleTypography>
+          {context.account ? (
+            <>
+              <BootstrapTooltip sx={{ [`& .${tooltipClasses.tooltip}`]: { maxWidth: "none" } }} title={context.account} placement="bottom" arrow>
+                <Chip sx={{ color: "white", '& .MuiChip-icon': { color: "white" } }} icon={<AccountCircleOutlinedIcon />} label={truncateAddress(context.account)} variant="outlined" />
+              </BootstrapTooltip >
+              <Button color="inherit" onClick={handleClickLogout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" onClick={handleClickLogin}>
+                Login
+              </Button>
+              <LoginDialog open={loginOpen} onClose={handleLoginClose}></LoginDialog>
+            </>
+          )}
         </Toolbar>
       </AppBar>
-    </Root>
+    </Root >
   )
 }
