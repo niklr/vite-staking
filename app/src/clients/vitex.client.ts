@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { getLogger } from '../util/logger';
 
-const logger = getLogger();
+type BaseResult<T> = {
+  code: number,
+  data: T
+}
 
 export type TokenDetailResult = {
   name: string
@@ -19,20 +21,8 @@ export class VitexClient {
   }
 
   async getTokenDetailAsync(tokenId: string): Promise<Maybe<TokenDetailResult>> {
-    try {
-      const result = await axios.get<TokenDetailResult>(this._baseUrl + "/api/v1/token/detail?tokenId=" + tokenId);
-      return result.data;
-      // return {
-      //   name: result.data.name,
-      //   symbol: result.data.symbol,
-      //   originalSymbol: result.data.originalSymbol,
-      //   tokenDecimals: result.data.tokenDecimals,
-      //   urlIcon: result.data.urlIcon
-      // }
-    } catch (error) {
-      logger.error(error)
-    }
-    return undefined;
+    const result = await axios.get<BaseResult<TokenDetailResult>>(this._baseUrl + "/api/v1/token/detail?tokenId=" + tokenId);
+    return result.data.data;
   }
 }
 

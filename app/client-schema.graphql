@@ -1,0 +1,14 @@
+# https://www.apollographql.com/blog/tooling/apollo-codegen/typescript-graphql-code-generator-generate-graphql-types/
+type Token {
+  id: ID!
+  name: String!
+  symbol: String!
+  originalSymbol: String!
+  decimals: Int!
+  iconUrl: String!
+  url: String!
+}
+
+extend type Query {
+  token(id: ID!): Token
+}

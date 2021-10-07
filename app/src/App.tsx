@@ -1,5 +1,7 @@
 import React from 'react';
+import { ApolloProvider } from '@apollo/client';
 import { styled } from '@mui/material';
+import { getApolloClient } from './clients/apollo.client';
 import { ConnectedWeb3 } from './contexts/connectedWeb3';
 import { Web3Provider } from './contexts/web3';
 import { Main } from './features/main/components/main';
@@ -15,11 +17,14 @@ const Background = styled('div')(`
 );
 
 const App: React.FC = () => {
+  const apolloClient = React.useMemo(() => getApolloClient(), [])
   return (
     <Background>
       <Web3Provider>
         <ConnectedWeb3>
-          <Main />
+          <ApolloProvider client={apolloClient}>
+            <Main />
+          </ApolloProvider>
         </ConnectedWeb3>
       </Web3Provider>
     </Background>

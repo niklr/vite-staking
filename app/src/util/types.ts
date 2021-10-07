@@ -12,6 +12,7 @@ export type Token = {
   id: string
   name: string
   symbol: string
+  originalSymbol: string
   decimals: number
   iconUrl: string
   url: string
