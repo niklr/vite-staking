@@ -21,4 +21,8 @@ export class ViteDataSource extends BaseDataSource {
   getBalanceAsync(_address: string): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }
+
+  getTotalPoolsAsync(): Promise<number> {
+    throw new Error("Method not implemented.");
+  }
 }

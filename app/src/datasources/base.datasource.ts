@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import { getVitexClient, VitexClient } from "../clients/vitex.client";
+import { UnknownToken } from "../common/constants";
 import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
 import { Token } from "../util/types";
@@ -8,17 +9,21 @@ import { getWalletManager, WalletAccount, WalletManager } from "../wallet";
 const logger = getLogger();
 
 export interface IDataSource {
-  getTokenAsync(id: string): Promise<Maybe<Token>>;
+  initAsync(): Promise<void>;
+  getTokenAsync(id: string): Promise<Token>;
   getBalanceAsync(_address: string): Promise<BigNumber>;
+  getTotalPoolsAsync(): Promise<number>;
 }
 
 export abstract class BaseDataSource implements IDataSource {
   private readonly _walletManager: WalletManager;
   private readonly _vitexClient: VitexClient;
+  private readonly _tokens: Map<string, Token>;
 
   constructor() {
     this._walletManager = getWalletManager();
     this._vitexClient = getVitexClient();
+    this._tokens = new Map<string, Token>();
   }
 
   async initAsync(): Promise<void> {
@@ -31,11 +36,15 @@ export abstract class BaseDataSource implements IDataSource {
     return account as WalletAccount;
   }
 
-  async getTokenAsync(id: string): Promise<Maybe<Token>> {
+  async getTokenAsync(id: string): Promise<Token> {
     try {
+      const existing = this._tokens.get(id);
+      if (existing) {
+        return existing;
+      }
       const result = await this._vitexClient.getTokenDetailAsync(id);
       if (result) {
-        return {
+        const token = {
           id,
           name: result.name,
           symbol: result.symbol,
@@ -44,14 +53,23 @@ export abstract class BaseDataSource implements IDataSource {
           iconUrl: result.urlIcon,
           url: "https://coinmarketcap.com/currencies/" + result.name
         }
+        this._tokens.set(id, token);
+        return token;
       }
     } catch (error) {
       logger.error(error)();
     }
-    return undefined;
+    const unknownToken = {
+      ...UnknownToken,
+      id
+    }
+    this._tokens.set(id, unknownToken);
+    return unknownToken;
   }
 
   protected abstract initAsyncProtected(): Promise<void>;
 
   abstract getBalanceAsync(_address: string): Promise<BigNumber>;
+
+  abstract getTotalPoolsAsync(): Promise<number>;
 }

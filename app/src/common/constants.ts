@@ -1,4 +1,4 @@
-import { Network } from "../util/types"
+import { Network, Token } from "../util/types"
 
 export const CommonConstants = {
   APP_NAME: 'VITE Staking Pools',
@@ -36,3 +36,13 @@ export const Networks: Network[] = [
     connectorUrl: 'wss://biforst.vite.net'
   }
 ]
+
+export const UnknownToken: Token = {
+  id: "-1",
+  name: "UNKNOWN",
+  symbol: "UNKNOWN",
+  originalSymbol: "UNKNOWN",
+  decimals: 0,
+  iconUrl: undefined,
+  url: undefined
+}
