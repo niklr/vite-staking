@@ -1,6 +1,5 @@
 import { ViteClient } from "../clients/vite.client";
-import { IDataSource, ViteDataSource } from "../datasources";
-import { MockDataSource } from "../datasources/mock.datasource";
+import { getMockDataSource, getViteDataSource, IDataSource } from "../datasources";
 import { getLogger } from "../util/logger";
 import { Network } from "../util/types";
 
@@ -12,16 +11,16 @@ export class CommonContext {
 
   constructor() {
     this._vite = new ViteClient();
-    this._datasource = new MockDataSource();
+    this._datasource = getMockDataSource();
   }
 
   async initAsync(network: Network): Promise<void> {
     switch (network.id) {
       case 3:
-        this._datasource = new MockDataSource();
+        this._datasource = getMockDataSource();
         break;
       default:
-        this._datasource = new ViteDataSource();
+        this._datasource = getViteDataSource();
         break;
     }
     await this._datasource.initAsync();

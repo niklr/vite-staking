@@ -55,3 +55,9 @@ export class MockDataSource extends BaseDataSource {
     return this._pools.length;
   }
 }
+
+const ds = new MockDataSource();
+
+export const getMockDataSource = () => {
+  return ds;
+}

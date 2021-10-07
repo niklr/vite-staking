@@ -28,7 +28,7 @@ export const Pools: React.FC = () => {
             )}
           </Grid>
         ) : (
-          <PoolList></PoolList>
+          <PoolList total={totalPoolsQuery.data?.totalPools ?? 0}></PoolList>
         )}
       </Grid>
     </Container>

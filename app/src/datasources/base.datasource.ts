@@ -27,6 +27,7 @@ export abstract class BaseDataSource implements IDataSource {
   }
 
   async initAsync(): Promise<void> {
+    logger.info("BaseDataSource.initAsync")();
     await this.initAsyncProtected();
   }
 

@@ -1,8 +1,13 @@
-import React from 'react';
+import React from "react";
 
-export const PoolListItem: React.FC = () => {
+interface Props {
+  index: number;
+}
+
+export const PoolListItem: React.FC<Props> = (props: Props) => {
   return (
     <>
+      {props.index}
     </>
   );
 }

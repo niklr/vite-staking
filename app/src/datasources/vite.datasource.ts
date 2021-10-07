@@ -26,3 +26,9 @@ export class ViteDataSource extends BaseDataSource {
     throw new Error("Method not implemented.");
   }
 }
+
+const ds = new ViteDataSource();
+
+export const getViteDataSource = () => {
+  return ds;
+}

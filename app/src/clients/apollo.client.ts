@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/clie
 import { getCommonContext } from '../contexts/common';
 import { IDataSource } from '../datasources';
 import { TokenQueries } from '../queries';
+import { PoolQueries } from '../queries/pool';
 
 export type ApolloContext = {
   cache: InMemoryCache,
@@ -35,6 +36,7 @@ const cache: InMemoryCache = new InMemoryCache({
 
 const resolvers = {
   Query: {
+    ...PoolQueries,
     ...TokenQueries
   }
 };
