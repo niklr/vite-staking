@@ -35,6 +35,10 @@ export class CommonContext {
   get vite(): ViteClient {
     return this._vite;
   }
+
+  get datasource(): IDataSource {
+    return this._datasource;
+  }
 }
 
 const context = new CommonContext();

@@ -14,6 +14,10 @@ export class ViteDataSource extends BaseDataSource {
     logger.info("ViteDataSource loaded")();
   }
 
+  protected async initAsyncProtected(): Promise<void> {
+    await Promise.resolve();
+  }
+
   getBalanceAsync(_address: string): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }

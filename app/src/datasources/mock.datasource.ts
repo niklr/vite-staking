@@ -10,6 +10,10 @@ export class MockDataSource extends BaseDataSource {
     logger.info("MockDataSource loaded")();
   }
 
+  protected async initAsyncProtected(): Promise<void> {
+    await Promise.resolve();
+  }
+
   getBalanceAsync(_address: string): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }

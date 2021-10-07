@@ -19,5 +19,11 @@ export abstract class BaseDataSource implements IDataSource {
     return account as WalletAccount;
   }
 
+  async initAsync(): Promise<void> {
+    await this.initAsyncProtected();
+  }
+
+  protected abstract initAsyncProtected(): Promise<void>;
+
   abstract getBalanceAsync(_address: string): Promise<BigNumber>;
 }
