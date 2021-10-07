@@ -12,6 +12,7 @@
     "@vite/connector": "^0.0.2",
     "@vite/vitejs": "^2.3.14",
     "@vite/vitejs-ws": "^2.3.14",
+    "axios": "^0.22.0",
     "bignumber.js": "^9.0.1",
     "graphql": "^15.6.1",
     "notistack": "^2.0.2",

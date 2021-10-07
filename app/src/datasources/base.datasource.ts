@@ -13,14 +13,14 @@ export abstract class BaseDataSource implements IDataSource {
     this._walletManager = getWalletManager();
   }
 
+  async initAsync(): Promise<void> {
+    await this.initAsyncProtected();
+  }
+
   getAccount(): WalletAccount {
     const account = this._walletManager.getActiveAccount();
     Ensure.notNull(account, "account", "Please connect your wallet first.");
     return account as WalletAccount;
-  }
-
-  async initAsync(): Promise<void> {
-    await this.initAsyncProtected();
   }
 
   protected abstract initAsyncProtected(): Promise<void>;
