@@ -1,19 +1,36 @@
 import { useQuery } from '@apollo/client';
+import { Container, Grid } from '@mui/material';
 import React from 'react';
-import { GET_TOKEN_QUERY } from '../../../../queries';
-import { GetToken, GetTokenVariables } from '../../../../queries/__generated__/GetToken';
+import { GET_TOTAL_POOLS_QUERY } from '../../../../queries/pool';
+import { GetTotalPools } from '../../../../queries/__generated__/GetTotalPools';
+import { FormatUtil } from '../../../../util/format.util';
+import { Alert } from '../../../common/components/alert';
 import { PoolList } from '../list';
 
 export const Pools: React.FC = () => {
-  const contributionQuery = useQuery<GetToken, GetTokenVariables>(GET_TOKEN_QUERY, {
-    variables: {
-      id: "tti_5649544520544f4b454e6e40"
-    }
+  const totalPoolsQuery = useQuery<GetTotalPools>(GET_TOTAL_POOLS_QUERY, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'network-only'
   });
-  console.log(contributionQuery.data?.token)
+
+  const error = totalPoolsQuery.error;
+  const loading = totalPoolsQuery.loading;
+
   return (
-    <>
-      <PoolList></PoolList>
-    </>
+    <Container sx={{ pt: 6, pb: 6 }} maxWidth="lg">
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
+        {loading || error ? (
+          <Grid item key='1' xs={12} md={6}>
+            {loading ? (
+              <Alert message="Loading..." type="default" ></Alert>
+            ) : (
+              <Alert message={FormatUtil.formatMessage(error)} type="warning"></Alert>
+            )}
+          </Grid>
+        ) : (
+          <PoolList></PoolList>
+        )}
+      </Grid>
+    </Container>
   );
 }

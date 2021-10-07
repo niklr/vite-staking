@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { ApolloContext } from '../clients/apollo.client';
 
-export const GET_TOTAL_PROJECTS_QUERY = gql`
+export const GET_TOTAL_POOLS_QUERY = gql`
   query GetTotalPools {
     totalPools @client
   }

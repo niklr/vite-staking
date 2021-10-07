@@ -11,4 +11,5 @@ type Token {
 
 extend type Query {
   token(id: ID!): Token
+  totalPools: Int!
 }
