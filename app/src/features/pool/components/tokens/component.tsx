@@ -1,31 +1,44 @@
-import { Avatar, Badge, Grid, styled, Typography } from '@mui/material';
-import React from 'react';
+import { Avatar, Badge, Grid, styled, Typography } from "@mui/material";
+import React from "react";
+import { Pool } from "../../../../util/types";
 
-export const Tokens: React.FC = () => {
-  const SmallAvatar = styled(Avatar)(({ theme }) => ({
+interface Props {
+  loading: boolean
+  pool: Maybe<Pool>
+}
+
+export const Tokens: React.FC<Props> = (props: Props) => {
+  const BigCoin = styled(Avatar)(({ theme }) => ({
+    width: 50,
+    height: 50,
+    backgroundColor: "white",
+    border: "1px solid black"
+  }));
+  const SmallCoin = styled(Avatar)(({ theme }) => ({
     width: 30,
     height: 30,
-    border: `2px solid ${theme.palette.background.paper}`,
+    backgroundColor: "white",
+    border: `1px solid ${theme.palette.grey[600]}`
   }));
   return (
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
         <Badge
           overlap="circular"
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           badgeContent={
-            <SmallAvatar alt="VITE" src="/static/images/avatar/1.jpg" />
+            <SmallCoin alt="VITE" src={props.pool?.rewardToken.iconUrl ?? ""} />
           }
         >
-          <Avatar alt="BAN" src="/static/images/avatar/2.jpg" sx={{ width: 50, height: 50 }} />
+          <BigCoin alt="BAN" src={props.pool?.stakingToken.iconUrl ?? ""} />
         </Badge>
       </Grid>
       <Grid item>
         <Typography variant="subtitle1">
-          Earn BAN
+          Earn {props.pool?.rewardToken.originalSymbol}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Stake VITE
+          Stake {props.pool?.stakingToken.originalSymbol}
         </Typography>
       </Grid>
     </Grid>

@@ -1,11 +1,9 @@
 import React from "react";
-import { useQuery } from "@apollo/client";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { usePoolHook } from "../../../../hooks/pool.hook";
 import { Tokens } from "../tokens";
-import { GetPool, GetPoolVariables } from "../../../../queries/__generated__/GetPool";
-import { GET_POOL_QUERY } from "../../../../queries/pool";
 
 const TransparentPaper = styled(Paper)(
   ({ theme }) => ({
@@ -19,29 +17,20 @@ interface Props {
 }
 
 export const PoolListItem: React.FC<Props> = (props: Props) => {
-  const poolQuery = useQuery<GetPool, GetPoolVariables>(GET_POOL_QUERY, {
-    variables: {
-      id: props.index.toString()
-    },
-    fetchPolicy: 'network-only'
-  });
-  console.log(poolQuery.data?.pool)
-
-  // const error = poolQuery.error;
-  // const loading = poolQuery.loading;
+  const poolHook = usePoolHook(props.index);
 
   return (
     <Accordion defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary sx={{ backgroundColor: "rgba(217, 217, 217, 0.1)" }} expandIcon={<ExpandMoreIcon />}>
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
           <Grid item>
-            <Tokens></Tokens>
+            <Tokens loading={poolHook.loading} pool={poolHook.pool}></Tokens>
           </Grid>
           <Grid item xs container alignItems="center">
             <Grid item xs container justifyContent="space-evenly" direction="row" spacing={2}>
               <Grid item>
                 <Typography variant="body2" color="text.secondary">
-                  BAN earned
+                  {poolHook.pool?.rewardToken.originalSymbol} earned
                 </Typography>
                 <Typography variant="subtitle1">
                   0
@@ -81,15 +70,19 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
       <AccordionDetails sx={{ backgroundColor: "rgba(217, 217, 217, 0.3)", pt: 2 }}>
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
           <Grid item sx={{ mr: 4 }}>
-            <Link underline="none" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>View BAN&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon></Link>
-            <Link underline="none" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>View VITE&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon></Link>
+            <Link underline="none" href={poolHook.pool?.rewardToken.url ?? "#"} target="_blank" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
+              View {poolHook.pool?.rewardToken.originalSymbol}&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon>
+            </Link>
+            <Link underline="none" href={poolHook.pool?.stakingToken.url ?? "#"} target="_blank" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
+              View {poolHook.pool?.stakingToken.originalSymbol}&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon>
+            </Link>
           </Grid>
           <Grid item xs container alignItems="center">
             <Grid item container justifyContent="space-evenly" direction="row" spacing={2}>
               <Grid item xs={12} md={6} lg={5} zeroMinWidth>
                 <TransparentPaper variant="outlined">
                   <Typography variant="body2" color="text.secondary">
-                    BAN earned
+                    {poolHook.pool?.rewardToken.originalSymbol} earned
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography sx={{ width: "100%" }} noWrap>221231232212312322123123</Typography>

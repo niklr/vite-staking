@@ -53,7 +53,7 @@ export abstract class BaseDataSource implements IDataSource {
           originalSymbol: result.originalSymbol,
           decimals: result.tokenDecimals,
           iconUrl: result.urlIcon,
-          url: "https://coinmarketcap.com/currencies/" + result.name
+          url: "https://coinmarketcap.com/currencies/" + result.name.replace(" ", "-")
         }
         this._tokens.set(id, token);
         return token;

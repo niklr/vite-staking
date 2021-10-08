@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { CommonUtil } from "../util/common.util";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
 import { ContractPool, Pool } from "../util/types";
@@ -52,6 +53,7 @@ export class MockDataSource extends BaseDataSource {
   }
 
   async getPoolAsync(id: number): Promise<Pool> {
+    await CommonUtil.timeout(CommonUtil.random(1000, 5000));
     return this._pools[id];
   }
 
