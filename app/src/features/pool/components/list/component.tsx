@@ -14,7 +14,7 @@ export const PoolList: React.FC<Props> = (props: Props) => {
     throw Error("Not implemented.");
   } else {
     for (let index = total; indexes.length < total; index--) {
-      indexes.push(index);
+      indexes.push(index - 1);
     }
   }
 
@@ -27,12 +27,12 @@ export const PoolList: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <>
+    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={3}>
       {indexes.map((index: number) => (
         <Grid item key={index} xs={12} md={10}>
           <PoolListItem index={index}></PoolListItem>
         </Grid>
       ))}
-    </>
+    </Grid>
   );
 }
