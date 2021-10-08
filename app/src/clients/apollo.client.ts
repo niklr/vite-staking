@@ -1,4 +1,6 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import BigNumber from 'bignumber.js';
+import { GraphQLScalarType } from 'graphql';
 import { getCommonContext } from '../contexts/common';
 import { IDataSource } from '../datasources';
 import { TokenQueries } from '../queries';
@@ -34,7 +36,19 @@ const cache: InMemoryCache = new InMemoryCache({
   }
 });
 
+const bigNumberScalar = new GraphQLScalarType({
+  name: 'BigNumber',
+  description: 'BigNumber custom scalar type',
+  serialize(value: BigNumber) {
+    return value.toString();
+  },
+  parseValue(value: string) {
+    return new BigNumber(value);
+  }
+});
+
 const resolvers = {
+  BigNumber: bigNumberScalar,
   Query: {
     ...PoolQueries,
     ...TokenQueries

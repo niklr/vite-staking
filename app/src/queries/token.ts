@@ -17,7 +17,7 @@ export const GET_TOKEN_QUERY = gql`
 `;
 
 export const TokenQueries = {
-  async token(parent: any, { id }: any, context: ApolloContext): Promise<Maybe<Token>> {
+  async token(parent: any, { id }: any, context: ApolloContext): Promise<Token> {
     return context.client.datasource.getTokenAsync(id);
   }
 }

@@ -1,8 +1,11 @@
+import React from "react";
+import { useQuery } from "@apollo/client";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import React from "react";
 import { Tokens } from "../tokens";
+import { GetPool, GetPoolVariables } from "../../../../queries/__generated__/GetPool";
+import { GET_POOL_QUERY } from "../../../../queries/pool";
 
 const TransparentPaper = styled(Paper)(
   ({ theme }) => ({
@@ -16,8 +19,19 @@ interface Props {
 }
 
 export const PoolListItem: React.FC<Props> = (props: Props) => {
+  const poolQuery = useQuery<GetPool, GetPoolVariables>(GET_POOL_QUERY, {
+    variables: {
+      id: props.index.toString()
+    },
+    fetchPolicy: 'network-only'
+  });
+  console.log(poolQuery.data?.pool)
+
+  // const error = poolQuery.error;
+  // const loading = poolQuery.loading;
+
   return (
-    <Accordion expanded={true}>
+    <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
           <Grid item>
@@ -61,11 +75,6 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                 </Typography>
               </Grid>
             </Grid>
-            {/* <Grid item>
-              <Typography variant="subtitle1" component="div">
-                <ArrowDropDownCircleOutlinedIcon></ArrowDropDownCircleOutlinedIcon>
-              </Typography>
-            </Grid> */}
           </Grid>
         </Grid>
       </AccordionSummary>

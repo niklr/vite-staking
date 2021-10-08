@@ -51,6 +51,10 @@ export class MockDataSource extends BaseDataSource {
     throw new Error("Method not implemented.");
   }
 
+  async getPoolAsync(id: number): Promise<Pool> {
+    return this._pools[id];
+  }
+
   async getTotalPoolsAsync(): Promise<number> {
     return this._pools.length;
   }

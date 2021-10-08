@@ -19,7 +19,7 @@ export interface GetToken_token {
 }
 
 export interface GetToken {
-  token: GetToken_token | null;
+  token: GetToken_token;
 }
 
 export interface GetTokenVariables {

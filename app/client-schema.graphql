@@ -1,4 +1,22 @@
 # https://www.apollographql.com/blog/tooling/apollo-codegen/typescript-graphql-code-generator-generate-graphql-types/
+scalar BigNumber
+
+type Pool {
+  id: ID!
+  stakingToken: Token!
+  rewardToken: Token!
+  apr: BigNumber!
+  totalStaked: BigNumber!
+  totalRewards: BigNumber!
+  startBlock: BigNumber!
+  endBlock: BigNumber!
+  endTimestamp: Int!
+  latestRewardBlock: BigNumber!
+  rewardPerPeriod: BigNumber!
+  rewardPerToken: BigNumber!
+  paidOut: BigNumber!
+}
+
 type Token {
   id: ID!
   name: String!
@@ -10,6 +28,7 @@ type Token {
 }
 
 extend type Query {
-  token(id: ID!): Token
+  pool(id: ID!): Pool!
+  token(id: ID!): Token!
   totalPools: Int!
 }
