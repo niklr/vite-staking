@@ -1,5 +1,5 @@
 import React from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, styled, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { usePoolHook } from "../../../../hooks/pool.hook";
@@ -29,39 +29,60 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
           <Grid item xs container alignItems="center">
             <Grid item xs container justifyContent="space-evenly" direction="row" spacing={2}>
               <Grid item>
-                <Typography variant="body2" color="text.secondary">
-                  {poolHook.pool?.rewardToken.originalSymbol} earned
-                </Typography>
-                <Typography variant="subtitle1">
-                  0
-                </Typography>
+                {poolHook.loading ? (
+                  <>
+                    <Skeleton animation="wave" height={25} width="90px" />
+                    <Skeleton animation="wave" height={25} width="70px" />
+                  </>
+                ) : (
+                  <>
+                    <Typography variant="body2" color="text.secondary">
+                      {poolHook.pool?.rewardToken.originalSymbol} earned
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      0
+                    </Typography>
+                  </>
+                )}
               </Grid>
               <Grid item>
                 <Typography variant="body2" color="text.secondary">
                   APR
                 </Typography>
-                <Typography variant="subtitle1">
-                  20%
-                </Typography>
+                {poolHook.loading ? (
+                  <Skeleton animation="wave" height={25} width="60px" />
+                ) : (
+                  <Typography variant="subtitle1">
+                    20%
+                  </Typography>
+                )}
               </Grid>
               <Grid item>
                 <Typography variant="body2" color="text.secondary">
                   Total staked
                 </Typography>
-                <Typography variant="subtitle1">
-                  22123123
-                </Typography>
+                {poolHook.loading ? (
+                  <Skeleton animation="wave" height={25} width="120px" />
+                ) : (
+                  <Typography variant="subtitle1">
+                    22123123
+                  </Typography>
+                )}
               </Grid>
               <Grid item>
                 <Typography variant="body2" color="text.secondary">
                   Ends in
                 </Typography>
-                <Typography variant="subtitle1">
-                  1000 Blocks
-                  <Typography variant="body2" color="text.secondary" display="inline" sx={{ ml: 1 }}>
-                    10 days 5 hours
+                {poolHook.loading ? (
+                  <Skeleton animation="wave" height={25} width="90px" />
+                ) : (
+                  <Typography variant="subtitle1">
+                    1000 Blocks
+                    <Typography variant="body2" color="text.secondary" display="inline" sx={{ ml: 1 }}>
+                      10 days 5 hours
+                    </Typography>
                   </Typography>
-                </Typography>
+                )}
               </Grid>
             </Grid>
           </Grid>
@@ -85,7 +106,13 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                     {poolHook.pool?.rewardToken.originalSymbol} earned
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ width: "100%" }} noWrap>221231232212312322123123</Typography>
+                    {poolHook.loading ? (
+                      <Skeleton animation="wave" height={30} width="100%" />
+                    ) : (
+                      <Typography sx={{ width: "100%" }} noWrap>
+                        221231232212312322123123
+                      </Typography>
+                    )}
                     <Button variant="contained" size="large" sx={{ ml: 2 }} disabled>Claim</Button>
                   </Box>
                 </TransparentPaper>
@@ -104,8 +131,14 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                     Staked
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ width: "100%" }} noWrap>221231232212312322123123</Typography>
-                    <Button variant="contained" size="large">Withdraw</Button>
+                    {poolHook.loading ? (
+                      <Skeleton animation="wave" height={30} width="100%" />
+                    ) : (
+                      <Typography sx={{ width: "100%" }} noWrap>
+                        221231232212312322123123
+                      </Typography>
+                    )}
+                    <Button variant="contained" size="large" sx={{ ml: 2 }}>Withdraw</Button>
                   </Box>
                 </TransparentPaper>
               </Grid>

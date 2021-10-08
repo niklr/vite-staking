@@ -1,4 +1,4 @@
-import { Avatar, Badge, Grid, styled, Typography } from "@mui/material";
+import { Avatar, Badge, Grid, Skeleton, styled, Typography } from "@mui/material";
 import React from "react";
 import { Pool } from "../../../../util/types";
 
@@ -27,20 +27,29 @@ export const Tokens: React.FC<Props> = (props: Props) => {
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           badgeContent={
-            <SmallCoin alt="VITE" src={props.pool?.rewardToken.iconUrl ?? ""} />
+            <SmallCoin alt={props.pool?.stakingToken.originalSymbol} src={props.pool?.stakingToken.iconUrl ?? ""} />
           }
         >
-          <BigCoin alt="BAN" src={props.pool?.stakingToken.iconUrl ?? ""} />
+          <BigCoin alt={props.pool?.rewardToken.originalSymbol} src={props.pool?.rewardToken.iconUrl ?? ""} />
         </Badge>
       </Grid>
       <Grid item>
-        <Typography variant="subtitle1">
-          Earn {props.pool?.rewardToken.originalSymbol}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Stake {props.pool?.stakingToken.originalSymbol}
-        </Typography>
+        {props.loading ? (
+          <>
+            <Skeleton animation="wave" height={25} width="70px" />
+            <Skeleton animation="wave" height={25} width="90px" />
+          </>
+        ) : (
+          <>
+            <Typography variant="subtitle1">
+              Earn {props.pool?.rewardToken.originalSymbol}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Stake {props.pool?.stakingToken.originalSymbol}
+            </Typography>
+          </>
+        )}
       </Grid>
-    </Grid>
+    </Grid >
   );
 }
