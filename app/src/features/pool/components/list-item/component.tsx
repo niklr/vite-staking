@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useConnectedWeb3Context } from "../../../../contexts/connectedWeb3";
 import { usePoolHook } from "../../../../hooks/pool.hook";
+import { ViteUtil } from "../../../../util/vite.util";
 import { Tokens } from "../tokens";
 
 const TransparentPaper = styled(Paper)(
@@ -20,6 +21,35 @@ interface Props {
 export const PoolListItem: React.FC<Props> = (props: Props) => {
   const context = useConnectedWeb3Context();
   const poolHook = usePoolHook(context, props.index);
+
+  const showRewardTokens = (decimals: number): string => {
+    if (!poolHook.pool || !poolHook.userInfo) {
+      return "0";
+    }
+    const rewardTokens = ViteUtil.calculateRewardTokens(poolHook.pool, poolHook.userInfo);
+    return ViteUtil.formatBigNumber(rewardTokens, poolHook.pool.rewardToken.decimals, decimals);
+  }
+
+  const showApr = (): string => {
+    if (!poolHook.pool) {
+      return "0";
+    }
+    return poolHook.pool.apr.toFormat(2);
+  }
+
+  const showTotalStaked = (): string => {
+    if (!poolHook.pool) {
+      return "0";
+    }
+    return ViteUtil.formatBigNumber(poolHook.pool.totalStaked, poolHook.pool.stakingToken.decimals, 2);
+  }
+
+  const showStaked = (decimals: number): string => {
+    if (!poolHook.pool || !poolHook.userInfo) {
+      return "0";
+    }
+    return ViteUtil.formatBigNumber(poolHook.userInfo.stakingBalance, poolHook.pool.stakingToken.decimals, decimals);
+  }
 
   return (
     <Accordion defaultExpanded>
@@ -42,7 +72,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                       {poolHook.pool?.rewardToken.originalSymbol} earned
                     </Typography>
                     <Typography variant="subtitle1">
-                      0
+                      {showRewardTokens(4)}
                     </Typography>
                   </>
                 )}
@@ -55,7 +85,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                   <Skeleton animation="wave" height={25} width="60px" />
                 ) : (
                   <Typography variant="subtitle1">
-                    20%
+                    {showApr()}%
                   </Typography>
                 )}
               </Grid>
@@ -67,7 +97,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                   <Skeleton animation="wave" height={25} width="120px" />
                 ) : (
                   <Typography variant="subtitle1">
-                    22123123
+                    {showTotalStaked()}
                   </Typography>
                 )}
               </Grid>
@@ -112,7 +142,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                       <Skeleton animation="wave" height={30} width="100%" />
                     ) : (
                       <Typography sx={{ width: "100%" }} noWrap>
-                        221231232212312322123123
+                        {showRewardTokens(18)}
                       </Typography>
                     )}
                     <Button variant="contained" size="large" sx={{ ml: 2 }} disabled>Claim</Button>
@@ -137,7 +167,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                       <Skeleton animation="wave" height={30} width="100%" />
                     ) : (
                       <Typography sx={{ width: "100%" }} noWrap>
-                        221231232212312322123123
+                        {showStaked(18)}
                       </Typography>
                     )}
                     <Button variant="contained" size="large" sx={{ ml: 2 }}>Withdraw</Button>

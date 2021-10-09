@@ -2,7 +2,13 @@
   {
     "poolId": 0,
     "address": "vite_1b1aafb1db66bf8a8527efd20181763b116a7d610bbbd5d944",
+    "stakingBalance": "10234567899999999999",
+    "rewardDebt": "0"
+  },
+  {
+    "poolId": 1,
+    "address": "vite_1b1aafb1db66bf8a8527efd20181763b116a7d610bbbd5d944",
     "stakingBalance": "1000000000000000000",
-    "rewardDebt": "224599193"
+    "rewardDebt": "0"
   }
 ]

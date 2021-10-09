@@ -32,7 +32,7 @@ export class MockDataSource extends BaseDataSource {
         id: index,
         stakingToken,
         rewardToken,
-        apr: new BigNumber(20.126),
+        apr: this.getApr(index),
         totalStaked: new BigNumber(p.totalStakingBalance),
         totalRewards: new BigNumber(p.totalRewardBalance),
         startBlock: new BigNumber(p.startBlock),
@@ -43,6 +43,17 @@ export class MockDataSource extends BaseDataSource {
         rewardPerToken: new BigNumber(p.rewardPerToken),
         paidOut: new BigNumber(p.paidOut)
       })
+    }
+  }
+
+  private getApr(poolId: number): BigNumber {
+    switch (poolId) {
+      case 0:
+        return new BigNumber(2.12345678)
+      case 1:
+        return new BigNumber(3.55555555)
+      default:
+        return new BigNumber(0)
     }
   }
 
@@ -71,7 +82,7 @@ export class MockDataSource extends BaseDataSource {
   }
 
   async getPoolAsync(id: number): Promise<Pool> {
-    await CommonUtil.timeout(CommonUtil.random(1000, 5000));
+    await CommonUtil.timeout(CommonUtil.random(100, 500));
     return this._pools[id];
   }
 
