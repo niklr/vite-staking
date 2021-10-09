@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { CommonUtil } from "../util/common.util";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
-import { ContractPool, Pool } from "../util/types";
+import { ContractPool, ContractPoolUserInfo, Pool, PoolUserInfo } from "../util/types";
 import { BaseDataSource } from "./base.datasource";
 
 const logger = getLogger();
@@ -10,11 +10,13 @@ const logger = getLogger();
 export class MockDataSource extends BaseDataSource {
   private readonly _fileUtil: FileUtil;
   private _pools: Pool[];
+  private _users: PoolUserInfo[];
 
   constructor(fileUtil: FileUtil = new BrowserFileUtil()) {
     super();
     this._fileUtil = fileUtil;
     this._pools = [];
+    this._users = [];
     logger.info("MockDataSource loaded")();
   }
 
@@ -44,8 +46,24 @@ export class MockDataSource extends BaseDataSource {
     }
   }
 
+  private async initPoolUsersAsync(): Promise<void> {
+    let users = await this._fileUtil.readFileAsync("./assets/data/mock_user_info.json");
+    users = JSON.parse(users);
+    this._users = [];
+    for (let index = 0; index < users.length; index++) {
+      const u: ContractPoolUserInfo = users[index];
+      this._users.push({
+        poolId: u.poolId,
+        address: u.address,
+        stakingBalance: new BigNumber(u.stakingBalance),
+        rewardDebt: new BigNumber(u.rewardDebt)
+      })
+    }
+  }
+
   protected async initAsyncProtected(): Promise<void> {
     await this.initPoolsAsync();
+    await this.initPoolUsersAsync();
   }
 
   getBalanceAsync(_address: string): Promise<BigNumber> {
@@ -55,6 +73,19 @@ export class MockDataSource extends BaseDataSource {
   async getPoolAsync(id: number): Promise<Pool> {
     await CommonUtil.timeout(CommonUtil.random(1000, 5000));
     return this._pools[id];
+  }
+
+  async getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo> {
+    const existing = this._users.find(e => e.poolId === poolId && e.address.toLowerCase() === address.toLowerCase());
+    if (existing) {
+      return existing;
+    }
+    return {
+      poolId,
+      address,
+      stakingBalance: new BigNumber(0),
+      rewardDebt: new BigNumber(0)
+    }
   }
 
   async getTotalPoolsAsync(): Promise<number> {

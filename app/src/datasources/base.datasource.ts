@@ -3,7 +3,7 @@ import { getVitexClient, VitexClient } from "../clients/vitex.client";
 import { UnknownToken } from "../common/constants";
 import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
-import { Pool, Token } from "../util/types";
+import { Pool, PoolUserInfo, Token } from "../util/types";
 import { getWalletManager, WalletAccount, WalletManager } from "../wallet";
 
 const logger = getLogger();
@@ -12,6 +12,7 @@ export interface IDataSource {
   initAsync(): Promise<void>;
   getBalanceAsync(_address: string): Promise<BigNumber>;
   getPoolAsync(id: number): Promise<Pool>;
+  getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo>;
   getTokenAsync(id: string): Promise<Token>;
   getTotalPoolsAsync(): Promise<number>;
 }
@@ -74,6 +75,8 @@ export abstract class BaseDataSource implements IDataSource {
   abstract getBalanceAsync(_address: string): Promise<BigNumber>;
 
   abstract getPoolAsync(id: number): Promise<Pool>;
+
+  abstract getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo>;
 
   abstract getTotalPoolsAsync(): Promise<number>;
 }

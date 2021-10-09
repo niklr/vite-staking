@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { getViteClient, ViteClient } from "../clients/vite.client";
 import { getLogger } from "../util/logger";
-import { Pool } from "../util/types";
+import { Pool, PoolUserInfo } from "../util/types";
 import { BaseDataSource } from "./base.datasource";
 
 const logger = getLogger();
@@ -24,6 +24,10 @@ export class ViteDataSource extends BaseDataSource {
   }
 
   getPoolAsync(id: number): Promise<Pool> {
+    throw new Error("Method not implemented.");
+  }
+
+  async getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo> {
     throw new Error("Method not implemented.");
   }
 

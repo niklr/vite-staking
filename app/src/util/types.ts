@@ -49,6 +49,14 @@ export type ContractPool = {
 
 export type PoolUserInfo = {
   poolId: number
+  address: string
   stakingBalance: BigNumber
   rewardDebt: BigNumber
+}
+
+export type ContractPoolUserInfo = {
+  poolId: number
+  address: string
+  stakingBalance: string
+  rewardDebt: string
 }
