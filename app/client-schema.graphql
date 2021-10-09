@@ -36,7 +36,7 @@ type Token {
 
 extend type Query {
   pool(id: ID!): Pool!
-  poolUserInfo(poolId: Int!, address: String!): PoolUserInfo
+  poolUserInfo(poolId: Int!, address: String): PoolUserInfo
   token(id: ID!): Token!
   totalPools: Int!
 }

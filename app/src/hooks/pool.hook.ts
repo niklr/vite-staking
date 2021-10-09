@@ -1,22 +1,33 @@
-import { useQuery } from "@apollo/client";
-import { GET_POOL_QUERY } from "../queries/pool";
+import { useQuery, WatchQueryFetchPolicy } from "@apollo/client";
+import { IConnectedWeb3Context } from "../contexts/connectedWeb3";
+import { GET_POOL_QUERY, GET_POOL_USER_INFO_QUERY } from "../queries/pool";
 import { GetPool, GetPoolVariables } from "../queries/__generated__/GetPool";
-import { Pool } from "../util/types";
+import { GetPoolUserInfo, GetPoolUserInfoVariables } from "../queries/__generated__/GetPoolUserInfo";
+import { Pool, PoolUserInfo } from "../util/types";
 
-export const usePoolHook = (id: number) => {
+export const usePoolHook = (context: IConnectedWeb3Context, id: number, fetchPolicy: WatchQueryFetchPolicy = "network-only") => {
   const poolQuery = useQuery<GetPool, GetPoolVariables>(GET_POOL_QUERY, {
     variables: {
       id: id.toString()
     },
-    fetchPolicy: 'network-only'
+    fetchPolicy
+  });
+  const userInfoQuery = useQuery<GetPoolUserInfo, GetPoolUserInfoVariables>(GET_POOL_USER_INFO_QUERY, {
+    variables: {
+      poolId: id,
+      address: context.account
+    },
+    fetchPolicy
   });
 
-  const error = poolQuery.error;
-  const loading = poolQuery.loading;
+  const error = poolQuery.error || userInfoQuery.error;
+  const loading = poolQuery.loading || userInfoQuery.loading;
 
   return {
     poolQuery,
+    userInfoQuery,
     pool: poolQuery.data?.pool as Maybe<Pool>,
+    userInfo: userInfoQuery.data?.poolUserInfo as Maybe<PoolUserInfo>,
     error,
     loading
   }

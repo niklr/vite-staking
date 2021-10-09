@@ -21,5 +21,5 @@ export interface GetPoolUserInfo {
 
 export interface GetPoolUserInfoVariables {
   poolId: number;
-  address: string;
+  address?: string | null;
 }

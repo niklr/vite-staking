@@ -12,7 +12,7 @@ export interface IDataSource {
   initAsync(): Promise<void>;
   getBalanceAsync(_address: string): Promise<BigNumber>;
   getPoolAsync(id: number): Promise<Pool>;
-  getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo>;
+  getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>>;
   getTokenAsync(id: string): Promise<Token>;
   getTotalPoolsAsync(): Promise<number>;
 }
@@ -76,7 +76,7 @@ export abstract class BaseDataSource implements IDataSource {
 
   abstract getPoolAsync(id: number): Promise<Pool>;
 
-  abstract getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo>;
+  abstract getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>>;
 
   abstract getTotalPoolsAsync(): Promise<number>;
 }

@@ -27,7 +27,7 @@ export class ViteDataSource extends BaseDataSource {
     throw new Error("Method not implemented.");
   }
 
-  async getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo> {
+  async getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>> {
     throw new Error("Method not implemented.");
   }
 

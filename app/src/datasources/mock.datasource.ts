@@ -75,17 +75,11 @@ export class MockDataSource extends BaseDataSource {
     return this._pools[id];
   }
 
-  async getPoolUserInfoAsync(poolId: number, address: string): Promise<PoolUserInfo> {
-    const existing = this._users.find(e => e.poolId === poolId && e.address.toLowerCase() === address.toLowerCase());
-    if (existing) {
-      return existing;
+  async getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>> {
+    if (CommonUtil.isNullOrWhitespace(address)) {
+      return undefined;
     }
-    return {
-      poolId,
-      address,
-      stakingBalance: new BigNumber(0),
-      rewardDebt: new BigNumber(0)
-    }
+    return this._users.find(e => e.poolId === poolId && e.address.toLowerCase() === address?.toLowerCase());
   }
 
   async getTotalPoolsAsync(): Promise<number> {

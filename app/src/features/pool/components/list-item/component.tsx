@@ -2,6 +2,7 @@ import React from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { useConnectedWeb3Context } from "../../../../contexts/connectedWeb3";
 import { usePoolHook } from "../../../../hooks/pool.hook";
 import { Tokens } from "../tokens";
 
@@ -17,7 +18,8 @@ interface Props {
 }
 
 export const PoolListItem: React.FC<Props> = (props: Props) => {
-  const poolHook = usePoolHook(props.index);
+  const context = useConnectedWeb3Context();
+  const poolHook = usePoolHook(context, props.index);
 
   return (
     <Accordion defaultExpanded>
