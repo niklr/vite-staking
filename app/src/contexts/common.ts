@@ -29,6 +29,7 @@ export class CommonContext {
 
   dispose(): void {
     logger.info("Disposing CommonContext")();
+    this._datasource.dispose();
     this._vite.dispose();
   }
 

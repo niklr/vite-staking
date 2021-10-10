@@ -27,6 +27,7 @@ export class MockDataSource extends BaseDataSource {
     this._networkBlockHeight = new BigNumber(0);
     this._networkBlockHeightInterval = setInterval(() => {
       this._networkBlockHeight = this._networkBlockHeight.plus(1);
+      // console.log(this._networkBlockHeight.toString())
     }, 1000);
   }
 
@@ -98,8 +99,8 @@ export class MockDataSource extends BaseDataSource {
     throw new Error("Method not implemented.");
   }
 
-  getNetworkBlockHeightAsync(): Promise<BigNumber> {
-    throw new Error("Method not implemented.");
+  async getNetworkBlockHeightAsync(): Promise<BigNumber> {
+    return this._networkBlockHeight;
   }
 
   async getPoolAsync(id: number): Promise<Pool> {

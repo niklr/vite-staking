@@ -31,12 +31,12 @@ export abstract class BaseDataSource implements IDataSource {
   }
 
   async initAsync(): Promise<void> {
-    logger.info("BaseDataSource.initAsync")();
+    logger.info("Init BaseDataSource")();
     await this.initAsyncProtected();
   }
 
   dispose(): void {
-    logger.info("BaseDataSource.dispose")();
+    logger.info("Disposing BaseDataSource")();
     this.disposeProtected();
   }
 

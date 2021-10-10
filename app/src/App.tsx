@@ -20,13 +20,13 @@ const App: React.FC = () => {
   const apolloClient = React.useMemo(() => getApolloClient(), [])
   return (
     <Background>
-      <Web3Provider>
-        <ConnectedWeb3>
-          <ApolloProvider client={apolloClient}>
+      <ApolloProvider client={apolloClient}>
+        <Web3Provider>
+          <ConnectedWeb3>
             <Main />
-          </ApolloProvider>
-        </ConnectedWeb3>
-      </Web3Provider>
+          </ConnectedWeb3>
+        </Web3Provider>
+      </ApolloProvider>
     </Background>
   );
 }
