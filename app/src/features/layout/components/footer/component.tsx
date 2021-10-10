@@ -1,31 +1,24 @@
-import { useQuery } from '@apollo/client';
 import { Box, Chip, Grid, Typography } from '@mui/material';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
-import { GET_NETWORK_BLOCK_HEIGHT_QUERY } from '../../../../queries';
-import { GetNetworkBlockHeight } from '../../../../queries/__generated__/GetNetworkBlockHeight';
 import { BootstrapTooltip } from '../../../common/components/tooltip';
+import { getEmitter } from '../../../../util/emitter.util';
+import { GlobalEvent } from '../../../../util/types';
 
 export const Footer: React.FC = () => {
   const [networkBlockHeight, setNetworkBlockHeight] = useState(new BigNumber(0))
-  const [networkBlockHeightToggle, setNetworkBlockHeightToggle] = useState(false)
-  const query = useQuery<GetNetworkBlockHeight>(GET_NETWORK_BLOCK_HEIGHT_QUERY, {
-    fetchPolicy: 'network-only'
-  });
+  const emitter = getEmitter();
 
   useEffect(() => {
-    let interval = setInterval(async () => {
-      await query.refetch();
-      if (query.data?.networkBlockHeight) {
-        setNetworkBlockHeight(query.data.networkBlockHeight);
-        setNetworkBlockHeightToggle(!networkBlockHeightToggle);
-      }
-    }, 1000)
-    return () => {
-      clearInterval(interval);
+    const handleEvent = (height: BigNumber) => {
+      setNetworkBlockHeight(height);
     }
-  })
+    emitter.on(GlobalEvent.NetworkBlockHeight, handleEvent)
+    return () => {
+      emitter.off(GlobalEvent.NetworkBlockHeight, handleEvent)
+    };
+  }, [emitter]);
 
   return (
     <Box sx={{ py: "10px", px: "24px" }}>
@@ -36,7 +29,7 @@ export const Footer: React.FC = () => {
               <CropSquareIcon sx={{
                 color: "gray",
                 mr: "2px",
-                transform: networkBlockHeightToggle ? "rotate(45deg)" : "rotate(0deg)",
+                transform: networkBlockHeight.mod(2).eq(0) ? "rotate(45deg)" : "rotate(0deg)",
                 fontSize: "17px"
               }} />
               {networkBlockHeight.toString()}

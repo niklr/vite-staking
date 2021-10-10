@@ -72,3 +72,7 @@ export type PoolFilterValues = {
   sortBy: string
   search: string
 }
+
+export enum GlobalEvent {
+  NetworkBlockHeight = 'NetworkBlockHeight'
+}
