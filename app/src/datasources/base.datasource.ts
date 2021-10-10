@@ -3,6 +3,7 @@ import { getVitexClient, VitexClient } from "../clients/vitex.client";
 import { UnknownToken } from "../common/constants";
 import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
+import { MomentUtil } from "../util/moment.util";
 import { Pool, PoolUserInfo, Token } from "../util/types";
 import { getWalletManager, WalletAccount, WalletManager } from "../wallet";
 
@@ -23,6 +24,7 @@ export abstract class BaseDataSource implements IDataSource {
   private readonly _walletManager: WalletManager;
   private readonly _vitexClient: VitexClient;
   private readonly _tokens: Map<string, Token>;
+  private _moment: MomentUtil = new MomentUtil();
 
   constructor() {
     this._walletManager = getWalletManager();
@@ -32,6 +34,7 @@ export abstract class BaseDataSource implements IDataSource {
 
   async initAsync(): Promise<void> {
     logger.info("Init BaseDataSource")();
+    this._moment = new MomentUtil();
     await this.initAsyncProtected();
   }
 
@@ -44,6 +47,23 @@ export abstract class BaseDataSource implements IDataSource {
     const account = this._walletManager.getActiveAccount();
     Ensure.notNull(account, "account", "Please connect your wallet first.");
     return account as WalletAccount;
+  }
+
+  async getEndTimestampAsync(endBlock: BigNumber): Promise<number> {
+    try {
+      if (!endBlock || endBlock.lte(0)) {
+        return 0;
+      }
+      const networkBlockHeight = await this.getNetworkBlockHeightAsync();
+      const remainingSeconds = endBlock.minus(networkBlockHeight);
+      if (remainingSeconds.lte(0)) {
+        return 0;
+      }
+      return this._moment.get().add(remainingSeconds.toNumber(), "seconds").unix();
+    } catch (error) {
+      logger.error(error)();
+    }
+    return 0;
   }
 
   async getTokenAsync(id: string): Promise<Token> {

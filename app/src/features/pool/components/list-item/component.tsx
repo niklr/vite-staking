@@ -6,6 +6,7 @@ import { useConnectedWeb3Context } from "../../../../contexts/connectedWeb3";
 import { usePoolHook } from "../../../../hooks/pool.hook";
 import { ViteUtil } from "../../../../util/vite.util";
 import { Tokens } from "../tokens";
+import { PoolCountdown } from "../countdown";
 
 const TransparentPaper = styled(Paper)(
   ({ theme }) => ({
@@ -108,12 +109,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                 {poolHook.loading ? (
                   <Skeleton animation="wave" height={25} width="90px" />
                 ) : (
-                  <Typography variant="subtitle1">
-                    1000 Blocks
-                    <Typography variant="body2" color="text.secondary" display="inline" sx={{ ml: 1 }}>
-                      10 days 5 hours
-                    </Typography>
-                  </Typography>
+                  <PoolCountdown pool={poolHook.pool} />
                 )}
               </Grid>
             </Grid>

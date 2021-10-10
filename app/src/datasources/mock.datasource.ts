@@ -48,7 +48,7 @@ export class MockDataSource extends BaseDataSource {
         totalRewards: new BigNumber(p.totalRewardBalance),
         startBlock: new BigNumber(p.startBlock),
         endBlock: new BigNumber(p.endBlock),
-        endTimestamp: 0,
+        endTimestamp: await this.getEndTimestampAsync(new BigNumber(p.endBlock)),
         latestRewardBlock: new BigNumber(p.latestRewardBlock),
         rewardPerPeriod: new BigNumber(p.rewardPerPeriod),
         rewardPerToken: new BigNumber(p.rewardPerToken),
