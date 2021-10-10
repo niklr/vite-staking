@@ -1,5 +1,10 @@
 import BigNumber from "bignumber.js"
 
+export interface GenericType {
+  name: string;
+  type: string;
+}
+
 export type Network = {
   id: number
   networkId: number
@@ -59,4 +64,11 @@ export type ContractPoolUserInfo = {
   address: string
   stakingBalance: string
   rewardDebt: string
+}
+
+export type PoolFilterValues = {
+  stakedOnly: boolean
+  showLive: boolean
+  sortBy: string
+  search: string
 }

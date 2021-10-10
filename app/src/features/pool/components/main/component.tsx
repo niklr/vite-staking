@@ -5,6 +5,7 @@ import { GET_TOTAL_POOLS_QUERY } from '../../../../queries/pool';
 import { GetTotalPools } from '../../../../queries/__generated__/GetTotalPools';
 import { FormatUtil } from '../../../../util/format.util';
 import { Alert } from '../../../common/components/alert';
+import { PoolFilter } from '../filter';
 import { PoolList } from '../list';
 
 export const Pools: React.FC = () => {
@@ -28,7 +29,10 @@ export const Pools: React.FC = () => {
             )}
           </Grid>
         ) : (
-          <PoolList total={totalPoolsQuery.data?.totalPools ?? 0}></PoolList>
+          <>
+            <PoolFilter></PoolFilter>
+            <PoolList total={totalPoolsQuery.data?.totalPools ?? 0}></PoolList>
+          </>
         )}
       </Grid>
     </Container>

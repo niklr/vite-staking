@@ -1,4 +1,4 @@
-import { Network, Token } from "../util/types"
+import { GenericType, Network, Token } from "../util/types"
 
 export const CommonConstants = {
   APP_NAME: 'VITE Staking Pools',
@@ -46,3 +46,24 @@ export const UnknownToken: Token = {
   iconUrl: undefined,
   url: undefined
 }
+
+export enum PoolSortType {
+  DEFAULT = 0,
+  APR = 1,
+  TOTAL_STAKED = 2
+}
+
+export const PoolSortTypes: GenericType[] = [
+  {
+    name: "",
+    type: "DEFAULT"
+  },
+  {
+    name: "APR",
+    type: "APR"
+  },
+  {
+    name: "Total staked",
+    type: "TOTAL_STAKED"
+  }
+]
