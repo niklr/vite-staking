@@ -11,13 +11,23 @@ export class MockDataSource extends BaseDataSource {
   private readonly _fileUtil: FileUtil;
   private _pools: Pool[];
   private _users: PoolUserInfo[];
+  private _networkBlockHeight: BigNumber;
+  private _networkBlockHeightInterval?: NodeJS.Timeout;
 
   constructor(fileUtil: FileUtil = new BrowserFileUtil()) {
     super();
     this._fileUtil = fileUtil;
     this._pools = [];
     this._users = [];
+    this._networkBlockHeight = new BigNumber(0);
     logger.info("MockDataSource loaded")();
+  }
+
+  private initNetworkBlockHeight() {
+    this._networkBlockHeight = new BigNumber(0);
+    this._networkBlockHeightInterval = setInterval(() => {
+      this._networkBlockHeight = this._networkBlockHeight.plus(1);
+    }, 1000);
   }
 
   private async initPoolsAsync(): Promise<void> {
@@ -73,11 +83,22 @@ export class MockDataSource extends BaseDataSource {
   }
 
   protected async initAsyncProtected(): Promise<void> {
+    this.initNetworkBlockHeight();
     await this.initPoolsAsync();
     await this.initPoolUsersAsync();
   }
 
+  protected disposeProtected(): void {
+    if (this._networkBlockHeightInterval) {
+      clearInterval(this._networkBlockHeightInterval);
+    }
+  }
+
   getBalanceAsync(_address: string): Promise<BigNumber> {
+    throw new Error("Method not implemented.");
+  }
+
+  getNetworkBlockHeightAsync(): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }
 

@@ -19,7 +19,14 @@ export class ViteDataSource extends BaseDataSource {
     await Promise.resolve();
   }
 
+  protected disposeProtected(): void {
+  }
+
   getBalanceAsync(_address: string): Promise<BigNumber> {
+    throw new Error("Method not implemented.");
+  }
+
+  getNetworkBlockHeightAsync(): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }
 

@@ -3,8 +3,7 @@ import BigNumber from 'bignumber.js';
 import { GraphQLScalarType } from 'graphql';
 import { getCommonContext } from '../contexts/common';
 import { IDataSource } from '../datasources';
-import { TokenQueries } from '../queries';
-import { PoolQueries } from '../queries/pool';
+import { NetworkQueries, PoolQueries, TokenQueries } from '../queries';
 
 export type ApolloContext = {
   cache: InMemoryCache,
@@ -50,6 +49,7 @@ const bigNumberScalar = new GraphQLScalarType({
 const resolvers = {
   BigNumber: bigNumberScalar,
   Query: {
+    ...NetworkQueries,
     ...PoolQueries,
     ...TokenQueries
   }
