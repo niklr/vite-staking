@@ -79,7 +79,7 @@ export class MockDataSource extends BaseDataSource {
       this._users.push({
         __typename: TypeNames.PoolUserInfo,
         poolId: u.poolId,
-        address: u.address,
+        account: u.address,
         stakingBalance: new BigNumber(u.stakingBalance),
         rewardDebt: new BigNumber(u.rewardDebt)
       })
@@ -98,7 +98,7 @@ export class MockDataSource extends BaseDataSource {
     }
   }
 
-  getBalanceAsync(_address: string): Promise<BigNumber> {
+  getBalanceAsync(_account: string): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }
 
@@ -106,20 +106,21 @@ export class MockDataSource extends BaseDataSource {
     return this._networkBlockHeight;
   }
 
-  async getPoolAsync(id: number): Promise<Pool> {
+  async getPoolAsync(_id: number, _account?: string): Promise<Pool> {
     await CommonUtil.timeout(CommonUtil.random(100, 500));
-    return this._pools[id];
+    return this._pools[_id];
   }
 
-  async getPoolsAsync(): Promise<Pool[]> {
+  async getPoolsAsync(_account?: string): Promise<Pool[]> {
+    await CommonUtil.timeout(2000);
     return this._pools;
   }
 
-  async getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>> {
-    if (CommonUtil.isNullOrWhitespace(address)) {
+  async getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>> {
+    if (CommonUtil.isNullOrWhitespace(_account)) {
       return undefined;
     }
-    return this._users.find(e => e.poolId === poolId && e.address.toLowerCase() === address?.toLowerCase());
+    return this._users.find(e => e.poolId === _poolId && e.account.toLowerCase() === _account?.toLowerCase());
   }
 
   async getTotalPoolsAsync(): Promise<number> {

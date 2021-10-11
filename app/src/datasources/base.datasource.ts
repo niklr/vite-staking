@@ -3,29 +3,26 @@ import { getVitexClient, VitexClient } from "../clients/vitex.client";
 import { DefaultPoolFilterValues, UnknownToken } from "../common/constants";
 import { CommonUtil } from "../util/common.util";
 import { getEmitter, IGlobalEmitter } from "../util/emitter.util";
-import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
 import { MomentUtil } from "../util/moment.util";
 import { GlobalEvent, Pool, PoolFilterValues, PoolUserInfo, Token } from "../util/types";
-import { getWalletManager, WalletAccount, WalletManager } from "../wallet";
 
 const logger = getLogger();
 
 export interface IDataSource {
   initAsync(): Promise<void>;
   dispose(): void;
-  getBalanceAsync(_address: string): Promise<BigNumber>;
+  getBalanceAsync(_account: string): Promise<BigNumber>;
   getNetworkBlockHeightAsync(): Promise<BigNumber>;
-  getPoolAsync(id: number): Promise<Pool>;
-  getPoolsAsync(): Promise<Pool[]>;
-  getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>>;
-  getTokenAsync(id: string): Promise<Token>;
+  getPoolAsync(_id: number, _account?: string): Promise<Pool>;
+  getPoolsAsync(_account?: string): Promise<Pool[]>;
+  getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>>;
+  getTokenAsync(_id: string): Promise<Token>;
   getTotalPoolsAsync(): Promise<number>;
 }
 
 export abstract class BaseDataSource implements IDataSource {
   private readonly _emitter: IGlobalEmitter;
-  private readonly _walletManager: WalletManager;
   private readonly _vitexClient: VitexClient;
   private readonly _tokens: Map<string, Token>;
   private _moment: MomentUtil = new MomentUtil();
@@ -33,7 +30,6 @@ export abstract class BaseDataSource implements IDataSource {
 
   constructor() {
     this._emitter = getEmitter();
-    this._walletManager = getWalletManager();
     this._vitexClient = getVitexClient();
     this._tokens = new Map<string, Token>();
   }
@@ -57,12 +53,6 @@ export abstract class BaseDataSource implements IDataSource {
       console.log(newValues);
       this._poolFilterValues = newValues;
     }
-  }
-
-  getAccount(): WalletAccount {
-    const account = this._walletManager.getActiveAccount();
-    Ensure.notNull(account, "account", "Please connect your wallet first.");
-    return account as WalletAccount;
   }
 
   async getEndTimestampAsync(endBlock: BigNumber): Promise<number> {
@@ -124,15 +114,15 @@ export abstract class BaseDataSource implements IDataSource {
 
   protected abstract disposeProtected(): void;
 
-  abstract getBalanceAsync(_address: string): Promise<BigNumber>;
+  abstract getBalanceAsync(_account: string): Promise<BigNumber>;
 
   abstract getNetworkBlockHeightAsync(): Promise<BigNumber>;
 
-  abstract getPoolAsync(id: number): Promise<Pool>;
+  abstract getPoolAsync(_id: number, _account?: string): Promise<Pool>;
 
-  abstract getPoolsAsync(): Promise<Pool[]>;
+  abstract getPoolsAsync(_account?: string): Promise<Pool[]>;
 
-  abstract getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>>;
+  abstract getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>>;
 
   abstract getTotalPoolsAsync(): Promise<number>;
 }

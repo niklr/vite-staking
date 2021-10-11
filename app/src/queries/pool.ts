@@ -52,10 +52,10 @@ export const GET_TOTAL_POOLS_QUERY = gql`
 `;
 
 export const GET_POOL_USER_INFO_QUERY = gql`
-  query GetPoolUserInfo($poolId: Int!, $address: String) {
-    poolUserInfo(poolId: $poolId, address: $address) @client {
+  query GetPoolUserInfo($poolId: Int!, $account: String) {
+    poolUserInfo(poolId: $poolId, account: $account) @client {
       poolId
-      address
+      account
       stakingBalance
       rewardDebt
     }
@@ -72,7 +72,7 @@ export const PoolQueries = {
   async totalPools(parent: any, params: any, context: ApolloContext): Promise<number> {
     return await context.client.datasource.getTotalPoolsAsync();
   },
-  async poolUserInfo(parent: any, { poolId, address }: any, context: ApolloContext): Promise<Maybe<PoolUserInfo>> {
-    return context.client.datasource.getPoolUserInfoAsync(poolId, address);
+  async poolUserInfo(parent: any, { poolId, account }: any, context: ApolloContext): Promise<Maybe<PoolUserInfo>> {
+    return context.client.datasource.getPoolUserInfoAsync(poolId, account);
   }
 }

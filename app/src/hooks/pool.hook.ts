@@ -15,7 +15,7 @@ export const usePoolHook = (context: IConnectedWeb3Context, id: number, fetchPol
   const userInfoQuery = useQuery<GetPoolUserInfo, GetPoolUserInfoVariables>(GET_POOL_USER_INFO_QUERY, {
     variables: {
       poolId: id,
-      address: context.account
+      account: context.account
     },
     fetchPolicy
   });

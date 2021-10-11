@@ -39,6 +39,7 @@ export type Pool = {
   rewardPerPeriod: BigNumber
   rewardPerToken: BigNumber
   paidOut: BigNumber
+  userInfo?: Maybe<PoolUserInfo>
 }
 
 export type ContractPool = {
@@ -57,7 +58,7 @@ export type ContractPool = {
 export type PoolUserInfo = {
   __typename: string
   poolId: number
-  address: string
+  account: string
   stakingBalance: BigNumber
   rewardDebt: BigNumber
 }

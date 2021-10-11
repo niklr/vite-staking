@@ -22,7 +22,7 @@ export class ViteDataSource extends BaseDataSource {
   protected disposeProtected(): void {
   }
 
-  async getBalanceAsync(_address: string): Promise<BigNumber> {
+  async getBalanceAsync(_account: string): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }
 
@@ -30,15 +30,15 @@ export class ViteDataSource extends BaseDataSource {
     throw new Error("Method not implemented.");
   }
 
-  async getPoolAsync(id: number): Promise<Pool> {
+  async getPoolAsync(_id: number, _account?: string): Promise<Pool> {
     throw new Error("Method not implemented.");
   }
 
-  async getPoolsAsync(): Promise<Pool[]> {
+  async getPoolsAsync(_account?: string): Promise<Pool[]> {
     throw new Error("Method not implemented.");
   }
 
-  async getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>> {
+  async getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>> {
     throw new Error("Method not implemented.");
   }
 

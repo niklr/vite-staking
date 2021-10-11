@@ -10,7 +10,7 @@
 export interface GetPoolUserInfo_poolUserInfo {
   __typename: "PoolUserInfo";
   poolId: number;
-  address: string;
+  account: string;
   stakingBalance: any;
   rewardDebt: any;
 }
@@ -21,5 +21,5 @@ export interface GetPoolUserInfo {
 
 export interface GetPoolUserInfoVariables {
   poolId: number;
-  address?: string | null;
+  account?: string | null;
 }
