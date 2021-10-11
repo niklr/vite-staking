@@ -50,7 +50,6 @@ export abstract class BaseDataSource implements IDataSource {
 
   private handlePoolFilterValuesChanged(oldValues: PoolFilterValues, newValues: PoolFilterValues): void {
     if (!CommonUtil.equals(oldValues, newValues)) {
-      console.log(newValues);
       this._poolFilterValues = newValues;
     }
   }
