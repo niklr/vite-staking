@@ -2,8 +2,7 @@ import React from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { useConnectedWeb3Context } from "../../../../contexts/connectedWeb3";
-import { usePoolHook } from "../../../../hooks/pool.hook";
+import { Pool } from "../../../../util/types";
 import { ViteUtil } from "../../../../util/vite.util";
 import { Tokens } from "../tokens";
 import { PoolCountdown } from "../countdown";
@@ -16,40 +15,37 @@ const TransparentPaper = styled(Paper)(
   }));
 
 interface Props {
-  index: number;
+  pool?: Maybe<Pool>
 }
 
 export const PoolListItem: React.FC<Props> = (props: Props) => {
-  const context = useConnectedWeb3Context();
-  const poolHook = usePoolHook(context, props.index);
-
   const showRewardTokens = (decimals: number): string => {
-    if (!poolHook.pool || !poolHook.userInfo) {
+    if (!props.pool?.userInfo) {
       return "0";
     }
-    const rewardTokens = ViteUtil.calculateRewardTokens(poolHook.pool, poolHook.userInfo);
-    return ViteUtil.formatBigNumber(rewardTokens, poolHook.pool.rewardToken.decimals, decimals);
+    const rewardTokens = ViteUtil.calculateRewardTokens(props.pool);
+    return ViteUtil.formatBigNumber(rewardTokens, props.pool.rewardToken.decimals, decimals);
   }
 
   const showApr = (): string => {
-    if (!poolHook.pool) {
+    if (!props.pool) {
       return "0";
     }
-    return poolHook.pool.apr.toFormat(2);
+    return props.pool.apr.toFormat(2);
   }
 
   const showTotalStaked = (): string => {
-    if (!poolHook.pool) {
+    if (!props.pool) {
       return "0";
     }
-    return ViteUtil.formatBigNumber(poolHook.pool.totalStaked, poolHook.pool.stakingToken.decimals, 2);
+    return ViteUtil.formatBigNumber(props.pool.totalStaked, props.pool.stakingToken.decimals, 2);
   }
 
   const showStaked = (decimals: number): string => {
-    if (!poolHook.pool || !poolHook.userInfo) {
+    if (!props.pool?.userInfo) {
       return "0";
     }
-    return ViteUtil.formatBigNumber(poolHook.userInfo.stakingBalance, poolHook.pool.stakingToken.decimals, decimals);
+    return ViteUtil.formatBigNumber(props.pool.userInfo.stakingBalance, props.pool.stakingToken.decimals, decimals);
   }
 
   return (
@@ -57,12 +53,12 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
       <AccordionSummary sx={{ backgroundColor: "rgba(217, 217, 217, 0.1)" }} expandIcon={<ExpandMoreIcon />}>
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
           <Grid item>
-            <Tokens loading={poolHook.loading} pool={poolHook.pool}></Tokens>
+            <Tokens loading={!props.pool} pool={props.pool}></Tokens>
           </Grid>
           <Grid item xs container alignItems="center">
             <Grid item xs container justifyContent="space-evenly" direction="row" spacing={2}>
               <Grid item>
-                {poolHook.loading ? (
+                {!props.pool ? (
                   <>
                     <Skeleton animation="wave" height={25} width="90px" />
                     <Skeleton animation="wave" height={25} width="70px" />
@@ -70,7 +66,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                 ) : (
                   <>
                     <Typography variant="body2" color="text.secondary">
-                      {poolHook.pool?.rewardToken.originalSymbol} earned
+                      {props.pool?.rewardToken.originalSymbol} earned
                     </Typography>
                     <Typography variant="subtitle1">
                       {showRewardTokens(4)}
@@ -82,7 +78,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                 <Typography variant="body2" color="text.secondary">
                   APR
                 </Typography>
-                {poolHook.loading ? (
+                {!props.pool ? (
                   <Skeleton animation="wave" height={25} width="60px" />
                 ) : (
                   <Typography variant="subtitle1">
@@ -94,7 +90,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                 <Typography variant="body2" color="text.secondary">
                   Total staked
                 </Typography>
-                {poolHook.loading ? (
+                {!props.pool ? (
                   <Skeleton animation="wave" height={25} width="120px" />
                 ) : (
                   <Typography variant="subtitle1">
@@ -106,10 +102,10 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                 <Typography variant="body2" color="text.secondary">
                   Ends in
                 </Typography>
-                {poolHook.loading ? (
+                {!props.pool ? (
                   <Skeleton animation="wave" height={25} width="90px" />
                 ) : (
-                  <PoolCountdown pool={poolHook.pool} />
+                  <PoolCountdown pool={props.pool} />
                 )}
               </Grid>
             </Grid>
@@ -119,11 +115,11 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
       <AccordionDetails sx={{ backgroundColor: "rgba(217, 217, 217, 0.3)", pt: 2 }}>
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
           <Grid item sx={{ mr: 4 }}>
-            <Link underline="none" href={poolHook.pool?.rewardToken.url ?? "#"} target="_blank" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
-              View {poolHook.pool?.rewardToken.originalSymbol}&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon>
+            <Link underline="none" href={props.pool?.rewardToken.url ?? "#"} target="_blank" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
+              View {props.pool?.rewardToken.originalSymbol}&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon>
             </Link>
-            <Link underline="none" href={poolHook.pool?.stakingToken.url ?? "#"} target="_blank" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
-              View {poolHook.pool?.stakingToken.originalSymbol}&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon>
+            <Link underline="none" href={props.pool?.stakingToken.url ?? "#"} target="_blank" sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
+              View {props.pool?.stakingToken.originalSymbol}&nbsp;<OpenInNewIcon fontSize="small"></OpenInNewIcon>
             </Link>
           </Grid>
           <Grid item xs container alignItems="center">
@@ -131,10 +127,10 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
               <Grid item xs={12} md={6} lg={5} zeroMinWidth>
                 <TransparentPaper variant="outlined">
                   <Typography variant="body2" color="text.secondary">
-                    {poolHook.pool?.rewardToken.originalSymbol} earned
+                    {props.pool?.rewardToken.originalSymbol} earned
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {poolHook.loading ? (
+                    {!props.pool ? (
                       <Skeleton animation="wave" height={30} width="100%" />
                     ) : (
                       <Typography sx={{ width: "100%" }} noWrap>
@@ -159,7 +155,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                     Staked
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {poolHook.loading ? (
+                    {!props.pool ? (
                       <Skeleton animation="wave" height={30} width="100%" />
                     ) : (
                       <Typography sx={{ width: "100%" }} noWrap>

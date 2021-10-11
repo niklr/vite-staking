@@ -22,11 +22,24 @@ export const POOL_FIELDS = gql`
     rewardPerPeriod
     rewardPerToken
     paidOut
+    userInfo {
+      ...PoolUserInfoFields
+    }
+  }
+`;
+
+export const POOL_USER_INFO_FIELDS = gql`
+  fragment PoolUserInfoFields on PoolUserInfo {
+    poolId
+    account
+    stakingBalance
+    rewardDebt
   }
 `;
 
 export const GET_POOL_QUERY = gql`
   ${TOKEN_FIELDS}
+  ${POOL_USER_INFO_FIELDS}
   ${POOL_FIELDS}
   query GetPool($id: ID!, $account: String) {
     pool(id: $id, account: $account) @client {
@@ -37,6 +50,7 @@ export const GET_POOL_QUERY = gql`
 
 export const GET_POOLS_QUERY = gql`
   ${TOKEN_FIELDS}
+  ${POOL_USER_INFO_FIELDS}
   ${POOL_FIELDS}
   query GetPools($account: String) {
     pools(account: $account) @client {
@@ -52,12 +66,10 @@ export const GET_TOTAL_POOLS_QUERY = gql`
 `;
 
 export const GET_POOL_USER_INFO_QUERY = gql`
+  ${POOL_USER_INFO_FIELDS}
   query GetPoolUserInfo($poolId: Int!, $account: String) {
     poolUserInfo(poolId: $poolId, account: $account) @client {
-      poolId
-      account
-      stakingBalance
-      rewardDebt
+      ...PoolUserInfoFields
     }
   }
 `;

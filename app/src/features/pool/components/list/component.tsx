@@ -1,24 +1,16 @@
 import { Grid } from "@mui/material";
+import { Pool } from "../../../../util/types";
 import { Alert } from "../../../common/components/alert";
 import { PoolListItem } from "../list-item";
 
 interface Props {
-  total: number;
-  filter?: Maybe<any>;
+  pools?: Maybe<Pool[]>
 }
 
 export const PoolList: React.FC<Props> = (props: Props) => {
-  const total = props.total;
-  const indexes: number[] = [];
-  if (props.filter) {
-    throw Error("Not implemented.");
-  } else {
-    for (let index = 0; index < total; index++) {
-      indexes.push(index);
-    }
-  }
+  console.log(props.pools)
 
-  if (indexes.length <= 0) {
+  if (props.pools && props.pools.length <= 0) {
     return (
       <Grid item key="1" xs={12} md={6}>
         <Alert message="No pools found." type="default"></Alert>
@@ -28,11 +20,23 @@ export const PoolList: React.FC<Props> = (props: Props) => {
 
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center" spacing={3}>
-      {indexes.map((index: number) => (
-        <Grid item key={index} xs={12} md={10}>
-          <PoolListItem index={index}></PoolListItem>
-        </Grid>
-      ))}
+      {!props.pools ? (
+        <>
+          {[0, 1, 2].map((index: number) => (
+            <Grid item key={index} xs={12} md={10}>
+              <PoolListItem></PoolListItem>
+            </Grid>
+          ))}
+        </>
+      ) : (
+        <>
+          {props.pools.map((p: Pool) => (
+            <Grid item key={p.id} xs={12} md={10}>
+              <PoolListItem pool={p}></PoolListItem>
+            </Grid>
+          ))}
+        </>
+      )}
     </Grid>
   );
 }

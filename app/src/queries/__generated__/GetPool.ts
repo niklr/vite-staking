@@ -29,6 +29,14 @@ export interface GetPool_pool_rewardToken {
   url: string;
 }
 
+export interface GetPool_pool_userInfo {
+  __typename: "PoolUserInfo";
+  poolId: number;
+  account: string;
+  stakingBalance: any;
+  rewardDebt: any;
+}
+
 export interface GetPool_pool {
   __typename: "Pool";
   id: string;
@@ -44,6 +52,7 @@ export interface GetPool_pool {
   rewardPerPeriod: any;
   rewardPerToken: any;
   paidOut: any;
+  userInfo: GetPool_pool_userInfo | null;
 }
 
 export interface GetPool {

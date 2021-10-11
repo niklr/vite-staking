@@ -15,6 +15,7 @@ type Pool {
   rewardPerPeriod: BigNumber!
   rewardPerToken: BigNumber!
   paidOut: BigNumber!
+  userInfo: PoolUserInfo
 }
 
 type PoolUserInfo {
