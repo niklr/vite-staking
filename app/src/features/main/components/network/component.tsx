@@ -14,7 +14,7 @@ export const Network: React.FC = () => {
     let interval = setInterval(async () => {
       await query.refetch();
       if (query.data?.networkBlockHeight) {
-        emitter.emitNetworkBlockHeight(query.data.networkBlockHeight);
+        emitter.emitNetworkBlockHeightChanged(query.data.networkBlockHeight);
       }
     }, 1000)
     return () => {

@@ -1,16 +1,20 @@
 import BigNumber from 'bignumber.js';
 import EventEmitter from 'events';
-import { GlobalEvent } from './types';
+import { GlobalEvent, PoolFilterValues } from './types';
 
 export interface IGlobalEmitter {
-  emitNetworkBlockHeight(height: BigNumber): void
+  emitNetworkBlockHeightChanged(height: BigNumber): void
+  emitPoolFilterValuesChanged(oldValues: PoolFilterValues, newValues: PoolFilterValues): void
   on(event: string | symbol, listener: (...args: any[]) => void): this
   off(event: string | symbol, listener: (...args: any[]) => void): this
 }
 
 export class GlobalEmitter extends EventEmitter implements IGlobalEmitter {
-  emitNetworkBlockHeight(height: BigNumber): void {
-    this.emit(GlobalEvent.NetworkBlockHeight, height)
+  emitNetworkBlockHeightChanged(height: BigNumber): void {
+    this.emit(GlobalEvent.NetworkBlockHeightChanged, height)
+  }
+  emitPoolFilterValuesChanged(oldValues: PoolFilterValues, newValues: PoolFilterValues): void {
+    this.emit(GlobalEvent.PoolFilterValuesChanged, oldValues, newValues)
   }
 }
 

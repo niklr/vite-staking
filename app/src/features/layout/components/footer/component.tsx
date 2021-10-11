@@ -14,9 +14,9 @@ export const Footer: React.FC = () => {
     const handleEvent = (height: BigNumber) => {
       setNetworkBlockHeight(height);
     }
-    emitter.on(GlobalEvent.NetworkBlockHeight, handleEvent)
+    emitter.on(GlobalEvent.NetworkBlockHeightChanged, handleEvent)
     return () => {
-      emitter.off(GlobalEvent.NetworkBlockHeight, handleEvent)
+      emitter.off(GlobalEvent.NetworkBlockHeightChanged, handleEvent)
     };
   }, [emitter]);
 

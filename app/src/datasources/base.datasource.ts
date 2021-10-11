@@ -97,6 +97,12 @@ export abstract class BaseDataSource implements IDataSource {
     return unknownToken;
   }
 
+  async getFilteredPoolsAsync(): Promise<void> {
+    // 1. Load all pools if empty
+    // 2. Apply filter to base pools
+    // 3. Return filtered pools
+  }
+
   protected abstract initAsyncProtected(): Promise<void>;
 
   protected abstract disposeProtected(): void;

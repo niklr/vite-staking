@@ -1,15 +1,10 @@
 import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Switch, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { PoolSortType, PoolSortTypes } from "../../../../common/constants";
+import { DefaultPoolFilterValues, PoolSortTypes } from "../../../../common/constants";
 import { PoolFilterValues } from "../../../../util/types";
 
 export const PoolFilter: React.FC = () => {
-  const [values, setValues] = useState<PoolFilterValues>({
-    stakedOnly: false,
-    showLive: true,
-    sortBy: PoolSortTypes[PoolSortType.DEFAULT].type,
-    search: ""
-  });
+  const [values, setValues] = useState<PoolFilterValues>(DefaultPoolFilterValues);
 
   const handleSortByChange = (event: SelectChangeEvent) => {
     setValues({ ...values, sortBy: event.target.value });

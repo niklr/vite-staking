@@ -37,9 +37,9 @@ export const PoolCountdown: React.FC<Props> = (props: Props) => {
         }
       }
     }
-    emitter.on(GlobalEvent.NetworkBlockHeight, handleEvent)
+    emitter.on(GlobalEvent.NetworkBlockHeightChanged, handleEvent)
     return () => {
-      emitter.off(GlobalEvent.NetworkBlockHeight, handleEvent)
+      emitter.off(GlobalEvent.NetworkBlockHeightChanged, handleEvent)
     };
   }, [emitter, moment, props.pool]);
 

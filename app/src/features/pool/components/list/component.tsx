@@ -13,8 +13,8 @@ export const PoolList: React.FC<Props> = (props: Props) => {
   if (props.filter) {
     throw Error("Not implemented.");
   } else {
-    for (let index = total; indexes.length < total; index--) {
-      indexes.push(index - 1);
+    for (let index = 0; index < total; index++) {
+      indexes.push(index);
     }
   }
 

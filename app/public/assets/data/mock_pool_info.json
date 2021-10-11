@@ -22,5 +22,17 @@
     "rewardPerPeriod": "12500000",
     "rewardPerToken": "1234567",
     "paidOut": "0"
+  },
+  {
+    "stakingTokenId": "tti_5649544520544f4b454e6e40",
+    "rewardTokenId": "tti_c90c146c059b821527f40b98",
+    "totalStakingBalance": "100000000000000000000000",
+    "totalRewardBalance": "123456789999999999999",
+    "startBlock": "0",
+    "endBlock": "0",
+    "latestRewardBlock": "7922500",
+    "rewardPerPeriod": "1250000000000000",
+    "rewardPerToken": "0",
+    "paidOut": "0"
   }
 ]

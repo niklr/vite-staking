@@ -73,6 +73,13 @@ export type PoolFilterValues = {
   search: string
 }
 
+export enum PoolSortType {
+  DEFAULT = 0,
+  APR = 1,
+  TOTAL_STAKED = 2
+}
+
 export enum GlobalEvent {
-  NetworkBlockHeight = 'NetworkBlockHeight'
+  NetworkBlockHeightChanged = 'NetworkBlockHeightChanged',
+  PoolFilterValuesChanged = 'PoolFilterValuesChanged'
 }

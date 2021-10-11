@@ -1,4 +1,4 @@
-import { GenericType, Network, Token } from "../util/types"
+import { GenericType, Network, PoolFilterValues, PoolSortType, Token } from "../util/types"
 
 export const CommonConstants = {
   APP_NAME: 'VITE Staking Pools',
@@ -47,12 +47,6 @@ export const UnknownToken: Token = {
   url: undefined
 }
 
-export enum PoolSortType {
-  DEFAULT = 0,
-  APR = 1,
-  TOTAL_STAKED = 2
-}
-
 export const PoolSortTypes: GenericType[] = [
   {
     name: "",
@@ -67,3 +61,10 @@ export const PoolSortTypes: GenericType[] = [
     type: "TOTAL_STAKED"
   }
 ]
+
+export const DefaultPoolFilterValues: PoolFilterValues = {
+  stakedOnly: false,
+  showLive: true,
+  sortBy: PoolSortTypes[PoolSortType.DEFAULT].type,
+  search: ""
+}
