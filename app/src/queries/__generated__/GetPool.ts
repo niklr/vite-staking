@@ -52,4 +52,5 @@ export interface GetPool {
 
 export interface GetPoolVariables {
   id: string;
+  account?: string | null;
 }

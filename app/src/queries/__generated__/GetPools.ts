@@ -49,3 +49,7 @@ export interface GetPools_pools {
 export interface GetPools {
   pools: GetPools_pools[];
 }
+
+export interface GetPoolsVariables {
+  account?: string | null;
+}

@@ -28,8 +28,8 @@ export const POOL_FIELDS = gql`
 export const GET_POOL_QUERY = gql`
   ${TOKEN_FIELDS}
   ${POOL_FIELDS}
-  query GetPool($id: ID!) {
-    pool(id: $id) @client {
+  query GetPool($id: ID!, $account: String) {
+    pool(id: $id, account: $account) @client {
       ...PoolFields
     }
   }
@@ -38,8 +38,8 @@ export const GET_POOL_QUERY = gql`
 export const GET_POOLS_QUERY = gql`
   ${TOKEN_FIELDS}
   ${POOL_FIELDS}
-  query GetPools {
-    pools @client {
+  query GetPools($account: String) {
+    pools(account: $account) @client {
       ...PoolFields
     }
   }
@@ -63,11 +63,11 @@ export const GET_POOL_USER_INFO_QUERY = gql`
 `;
 
 export const PoolQueries = {
-  async pool(parent: any, { id }: any, context: ApolloContext): Promise<Pool> {
-    return context.client.datasource.getPoolAsync(id);
+  async pool(parent: any, { id, account }: any, context: ApolloContext): Promise<Pool> {
+    return context.client.datasource.getPoolAsync(id, account);
   },
-  async pools(parent: any, params: any, context: ApolloContext): Promise<Pool[]> {
-    return context.client.datasource.getPoolsAsync();
+  async pools(parent: any, { account }: any, context: ApolloContext): Promise<Pool[]> {
+    return context.client.datasource.getPoolsAsync(account);
   },
   async totalPools(parent: any, params: any, context: ApolloContext): Promise<number> {
     return await context.client.datasource.getTotalPoolsAsync();

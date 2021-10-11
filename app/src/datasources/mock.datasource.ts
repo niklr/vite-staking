@@ -108,12 +108,29 @@ export class MockDataSource extends BaseDataSource {
 
   async getPoolAsync(_id: number, _account?: string): Promise<Pool> {
     await CommonUtil.timeout(CommonUtil.random(100, 500));
-    return this._pools[_id];
+    const pool = this._pools[_id];
+    if (!_account) {
+      return pool;
+    }
+    return {
+      ...pool,
+      userInfo: await this.getPoolUserInfoAsync(_id, _account)
+    }
   }
 
   async getPoolsAsync(_account?: string): Promise<Pool[]> {
     await CommonUtil.timeout(2000);
-    return this._pools;
+    if (!_account) {
+      return this._pools;
+    }
+    const pools = [];
+    for (const p of this._pools) {
+      pools.push({
+        ...p,
+        userInfo: await this.getPoolUserInfoAsync(p.id, _account)
+      })
+    }
+    return pools;
   }
 
   async getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>> {
