@@ -20,6 +20,6 @@ export class GlobalEmitter extends EventEmitter implements IGlobalEmitter {
 
 const emitter = new GlobalEmitter();
 
-export const getEmitter = () => {
+export const getEmitter = (): IGlobalEmitter => {
   return emitter;
 }

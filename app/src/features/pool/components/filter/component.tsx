@@ -1,21 +1,33 @@
 import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Switch, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { DefaultPoolFilterValues, PoolSortTypes } from "../../../../common/constants";
+import { getEmitter } from "../../../../util/emitter.util";
 import { PoolFilterValues } from "../../../../util/types";
 
 export const PoolFilter: React.FC = () => {
   const [values, setValues] = useState<PoolFilterValues>(DefaultPoolFilterValues);
+  const emitter = getEmitter();
+
+  const emitEvent = (oldValues: PoolFilterValues, newValues: PoolFilterValues) => {
+    emitter.emitPoolFilterValuesChanged(oldValues, newValues);
+  }
 
   const handleSortByChange = (event: SelectChangeEvent) => {
-    setValues({ ...values, sortBy: event.target.value });
+    const newValues = { ...values, sortBy: event.target.value };
+    setValues(newValues);
+    emitEvent(values, newValues);
   };
 
   const handleChange = (prop: keyof PoolFilterValues) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value });
+    const newValues = { ...values, [prop]: event.target.value };
+    setValues(newValues);
+    emitEvent(values, newValues);
   };
 
   const handleCheckedChange = (prop: keyof PoolFilterValues) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.checked });
+    const newValues = { ...values, [prop]: event.target.checked };
+    setValues(newValues);
+    emitEvent(values, newValues);
   };
 
   return (

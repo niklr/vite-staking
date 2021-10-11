@@ -49,4 +49,9 @@ export abstract class CommonUtil {
   static random(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
+
+  static equals(lh: any, rh: any): boolean {
+    // The ORDER of the properties IS IMPORTANT
+    return JSON.stringify(lh) === JSON.stringify(rh);
+  }
 }

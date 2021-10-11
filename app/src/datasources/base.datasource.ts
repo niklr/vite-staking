@@ -1,10 +1,12 @@
 import BigNumber from "bignumber.js";
 import { getVitexClient, VitexClient } from "../clients/vitex.client";
-import { UnknownToken } from "../common/constants";
+import { DefaultPoolFilterValues, UnknownToken } from "../common/constants";
+import { CommonUtil } from "../util/common.util";
+import { getEmitter, IGlobalEmitter } from "../util/emitter.util";
 import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
 import { MomentUtil } from "../util/moment.util";
-import { Pool, PoolUserInfo, Token } from "../util/types";
+import { GlobalEvent, Pool, PoolFilterValues, PoolUserInfo, Token } from "../util/types";
 import { getWalletManager, WalletAccount, WalletManager } from "../wallet";
 
 const logger = getLogger();
@@ -21,12 +23,15 @@ export interface IDataSource {
 }
 
 export abstract class BaseDataSource implements IDataSource {
+  private readonly _emitter: IGlobalEmitter;
   private readonly _walletManager: WalletManager;
   private readonly _vitexClient: VitexClient;
   private readonly _tokens: Map<string, Token>;
   private _moment: MomentUtil = new MomentUtil();
+  private _poolFilterValues: PoolFilterValues = DefaultPoolFilterValues;
 
   constructor() {
+    this._emitter = getEmitter();
     this._walletManager = getWalletManager();
     this._vitexClient = getVitexClient();
     this._tokens = new Map<string, Token>();
@@ -35,12 +40,22 @@ export abstract class BaseDataSource implements IDataSource {
   async initAsync(): Promise<void> {
     logger.info("Init BaseDataSource")();
     this._moment = new MomentUtil();
+    this._poolFilterValues = DefaultPoolFilterValues;
+    this._emitter.on(GlobalEvent.PoolFilterValuesChanged, this.handlePoolFilterValuesChanged);
     await this.initAsyncProtected();
   }
 
   dispose(): void {
     logger.info("Disposing BaseDataSource")();
+    this._emitter.off(GlobalEvent.PoolFilterValuesChanged, this.handlePoolFilterValuesChanged);
     this.disposeProtected();
+  }
+
+  private handlePoolFilterValuesChanged(oldValues: PoolFilterValues, newValues: PoolFilterValues): void {
+    if (!CommonUtil.equals(oldValues, newValues)) {
+      console.log(newValues);
+      this._poolFilterValues = newValues;
+    }
   }
 
   getAccount(): WalletAccount {
