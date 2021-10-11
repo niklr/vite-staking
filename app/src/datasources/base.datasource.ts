@@ -17,6 +17,7 @@ export interface IDataSource {
   getBalanceAsync(_address: string): Promise<BigNumber>;
   getNetworkBlockHeightAsync(): Promise<BigNumber>;
   getPoolAsync(id: number): Promise<Pool>;
+  getPoolsAsync(): Promise<Pool[]>;
   getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>>;
   getTokenAsync(id: string): Promise<Token>;
   getTotalPoolsAsync(): Promise<number>;
@@ -128,6 +129,8 @@ export abstract class BaseDataSource implements IDataSource {
   abstract getNetworkBlockHeightAsync(): Promise<BigNumber>;
 
   abstract getPoolAsync(id: number): Promise<Pool>;
+
+  abstract getPoolsAsync(): Promise<Pool[]>;
 
   abstract getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>>;
 

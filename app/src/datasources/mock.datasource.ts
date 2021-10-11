@@ -111,6 +111,10 @@ export class MockDataSource extends BaseDataSource {
     return this._pools[id];
   }
 
+  async getPoolsAsync(): Promise<Pool[]> {
+    return this._pools;
+  }
+
   async getPoolUserInfoAsync(poolId: number, address?: string): Promise<Maybe<PoolUserInfo>> {
     if (CommonUtil.isNullOrWhitespace(address)) {
       return undefined;

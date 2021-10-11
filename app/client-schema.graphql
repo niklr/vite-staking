@@ -37,6 +37,7 @@ type Token {
 extend type Query {
   networkBlockHeight: BigNumber!
   pool(id: ID!): Pool!
+  pools: [Pool!]!
   poolUserInfo(poolId: Int!, address: String): PoolUserInfo
   token(id: ID!): Token!
   totalPools: Int!
