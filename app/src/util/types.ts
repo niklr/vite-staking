@@ -14,6 +14,7 @@ export type Network = {
 }
 
 export type Token = {
+  __typename: string
   id: string
   name: string
   symbol: string
@@ -24,6 +25,7 @@ export type Token = {
 }
 
 export type Pool = {
+  __typename: string
   id: number
   stakingToken: Token
   rewardToken: Token
@@ -53,6 +55,7 @@ export type ContractPool = {
 }
 
 export type PoolUserInfo = {
+  __typename: string
   poolId: number
   address: string
   stakingBalance: BigNumber

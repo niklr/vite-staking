@@ -1,39 +1,36 @@
 import { gql } from '@apollo/client';
 import { ApolloContext } from '../clients/apollo.client';
 import { Pool, PoolUserInfo } from '../util/types';
+import { TOKEN_FIELDS } from './token';
+
+export const POOL_FIELDS = gql`
+  fragment PoolFields on Pool {
+    id
+    stakingToken {
+      ...TokenFields
+    }
+    rewardToken {
+      ...TokenFields
+    }
+    apr
+    totalStaked
+    totalRewards
+    startBlock
+    endBlock
+    endTimestamp
+    latestRewardBlock
+    rewardPerPeriod
+    rewardPerToken
+    paidOut
+  }
+`;
 
 export const GET_POOL_QUERY = gql`
+  ${TOKEN_FIELDS}
+  ${POOL_FIELDS}
   query GetPool($id: ID!) {
     pool(id: $id) @client {
-      id
-      stakingToken {
-        id
-        name
-        symbol
-        originalSymbol
-        decimals
-        iconUrl
-        url
-      }
-      rewardToken {
-        id
-        name
-        symbol
-        originalSymbol
-        decimals
-        iconUrl
-        url
-      }
-      apr
-      totalStaked
-      totalRewards
-      startBlock
-      endBlock
-      endTimestamp
-      latestRewardBlock
-      rewardPerPeriod
-      rewardPerToken
-      paidOut
+      ...PoolFields
     }
   }
 `;

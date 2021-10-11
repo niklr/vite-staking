@@ -90,6 +90,7 @@ export abstract class BaseDataSource implements IDataSource {
       const result = await this._vitexClient.getTokenDetailAsync(id);
       if (result) {
         const token = {
+          __typename: "Token",
           id,
           name: result.name,
           symbol: result.symbol,

@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { TypeNames } from "../common/constants";
 import { CommonUtil } from "../util/common.util";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
@@ -40,6 +41,7 @@ export class MockDataSource extends BaseDataSource {
       const stakingToken = await this.getTokenAsync(p.stakingTokenId);
       const rewardToken = await this.getTokenAsync(p.rewardTokenId);
       this._pools.push({
+        __typename: TypeNames.Pool,
         id: index,
         stakingToken,
         rewardToken,
@@ -75,6 +77,7 @@ export class MockDataSource extends BaseDataSource {
     for (let index = 0; index < users.length; index++) {
       const u: ContractPoolUserInfo = users[index];
       this._users.push({
+        __typename: TypeNames.PoolUserInfo,
         poolId: u.poolId,
         address: u.address,
         stakingBalance: new BigNumber(u.stakingBalance),

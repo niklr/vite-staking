@@ -37,7 +37,14 @@ export const Networks: Network[] = [
   }
 ]
 
+export const TypeNames = {
+  Pool: "Pool",
+  PoolUserInfo: "PoolUserInfo",
+  Token: "Token"
+}
+
 export const UnknownToken: Token = {
+  __typename: TypeNames.Token,
   id: "-1",
   name: "UNKNOWN",
   symbol: "UNKNOWN",
