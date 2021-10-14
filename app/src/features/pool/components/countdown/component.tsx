@@ -1,8 +1,8 @@
 import { Typography } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useEffect, useMemo, useState } from "react";
+import { getMomentFactory } from "../../../../factories";
 import { getEmitter } from "../../../../util/emitter.util";
-import { MomentUtil } from "../../../../util/moment.util";
 import { GlobalEvent, Pool } from "../../../../util/types";
 
 interface Props {
@@ -13,7 +13,7 @@ export const PoolCountdown: React.FC<Props> = (props: Props) => {
   const [remainingBlocks, setRemainingBlocks] = useState<BigNumber>(new BigNumber(0));
   const [countdown, setCountdown] = useState<string>("");
   const emitter = getEmitter();
-  const moment = useMemo(() => new MomentUtil(), [])
+  const moment = useMemo(() => getMomentFactory().create(), [])
 
   useEffect(() => {
     const handleEvent = (height: BigNumber) => {

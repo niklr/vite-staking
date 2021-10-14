@@ -1,16 +1,23 @@
 import moment from 'moment';
 
 export class MomentUtil {
-  constructor() {
-    moment.locale(navigator.language);
+  private readonly _locale: string;
+
+  constructor(locale?: Maybe<string>) {
+    if (locale) {
+      this._locale = locale;
+    } else {
+      this._locale = navigator.language;
+    }
+    moment.locale(this._locale);
   }
 
-  public setLocale(language: string): void {
-    moment.locale(language);
+  public getLocale(): string {
+    return this._locale;
   }
 
   public get(): moment.Moment {
-    return moment()
+    return moment();
   }
 
   public getDuration(seconds: number): moment.Duration {

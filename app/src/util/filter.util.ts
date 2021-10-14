@@ -1,5 +1,5 @@
 import { partition } from "lodash";
-import { MomentUtil } from "./moment.util";
+import { getMomentFactory } from "../factories/moment.factory";
 import { Pool, PoolFilterValues } from "./types";
 
 export abstract class FilterUtil {
@@ -7,8 +7,7 @@ export abstract class FilterUtil {
     if (!pools) {
       return pools;
     }
-    // TODO: refactor
-    const moment = new MomentUtil();
+    const moment = getMomentFactory().create();
     const [closedPools, openPools] = partition(pools, (pool) => pool.endTimestamp > 0 && moment.get().unix() >= pool.endTimestamp);
     let refPools: Pool[] = openPools;
     if (filter.showLive) {
