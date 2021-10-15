@@ -83,6 +83,17 @@ export enum PoolSortType {
   TOTAL_STAKED = 2
 }
 
+export type PoolDialogState = {
+  type: PoolDialogType
+  open: boolean
+}
+
+export enum PoolDialogType {
+  DEPOSIT = 0,
+  WITHDRAW = 1,
+  CLAIM = 2
+}
+
 export enum GlobalEvent {
   NetworkBlockHeightChanged = 'NetworkBlockHeightChanged',
   PoolFilterValuesChanged = 'PoolFilterValuesChanged'
