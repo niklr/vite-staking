@@ -1,4 +1,5 @@
 import React from 'react';
+import { SnackbarProvider } from 'notistack';
 import { ApolloProvider } from '@apollo/client';
 import { styled } from '@mui/material';
 import { getApolloClient } from './clients/apollo.client';
@@ -20,13 +21,15 @@ const App: React.FC = () => {
   const apolloClient = React.useMemo(() => getApolloClient(), [])
   return (
     <Background>
-      <ApolloProvider client={apolloClient}>
-        <Web3Provider>
-          <ConnectedWeb3>
-            <Main />
-          </ConnectedWeb3>
-        </Web3Provider>
-      </ApolloProvider>
+      <SnackbarProvider maxSnack={3}>
+        <ApolloProvider client={apolloClient}>
+          <Web3Provider>
+            <ConnectedWeb3>
+              <Main />
+            </ConnectedWeb3>
+          </Web3Provider>
+        </ApolloProvider>
+      </SnackbarProvider>
     </Background>
   );
 }

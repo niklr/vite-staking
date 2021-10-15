@@ -4,7 +4,7 @@ import { PoolDepositDialog } from '../dialog-deposit';
 import { PoolWithdrawDialog } from '../dialog-withdraw';
 
 interface Props {
-  pool?: Maybe<Pool>
+  pool: Pool
   state: PoolDialogState
   setState: React.Dispatch<React.SetStateAction<PoolDialogState>>
 }

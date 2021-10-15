@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -193,19 +193,25 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                           {showStaked(18)}
                         </Typography>
                       )}
-                      <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickWithdraw}>Withdraw</Button>
+                      <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickWithdraw} disabled={!props.pool}>
+                        Withdraw
+                      </Button>
                     </Box>
                   </TransparentPaper>
                 </Grid>
                 <Grid item xs={12} md sx={{ display: "flex", alignItems: "center" }}>
-                  <Button variant="contained" size="large" fullWidth onClick={handleClickDeposit}>Stake</Button>
+                  <Button variant="contained" size="large" fullWidth onClick={handleClickDeposit} disabled={!props.pool}>
+                    Stake
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>
-      <PoolDialog pool={props.pool} state={dialogState} setState={setDialogState}></PoolDialog>
+      {props.pool && (
+        <PoolDialog pool={props.pool} state={dialogState} setState={setDialogState}></PoolDialog>
+      )}
     </>
   );
 }
