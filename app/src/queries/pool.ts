@@ -76,7 +76,7 @@ export const GET_POOL_USER_INFO_QUERY = gql`
 
 export const PoolQueries = {
   async pool(parent: any, { id, account }: any, context: ApolloContext): Promise<Pool> {
-    return context.client.datasource.getPoolAsync(id, account);
+    return context.client.datasource.getPoolAsync(Number(id), account);
   },
   async pools(parent: any, { account }: any, context: ApolloContext): Promise<Pool[]> {
     return context.client.datasource.getPoolsAsync(account);
@@ -85,6 +85,6 @@ export const PoolQueries = {
     return await context.client.datasource.getTotalPoolsAsync();
   },
   async poolUserInfo(parent: any, { poolId, account }: any, context: ApolloContext): Promise<Maybe<PoolUserInfo>> {
-    return context.client.datasource.getPoolUserInfoAsync(poolId, account);
+    return context.client.datasource.getPoolUserInfoAsync(Number(poolId), account);
   }
 }

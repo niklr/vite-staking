@@ -9,6 +9,6 @@ mutation Deposit($id: ID!, $amount: String!) {
 
 export const PoolMutations = {
   async deposit(parent: any, { id, amount }: any, context: ApolloContext): Promise<boolean> {
-    return context.client.datasource.depositAsync(id, amount);
+    return context.client.datasource.depositAsync(Number(id), amount);
   }
 }

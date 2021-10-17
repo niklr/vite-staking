@@ -87,6 +87,7 @@ export class MockDataSource extends BaseDataSource {
   }
 
   protected async initAsyncProtected(): Promise<void> {
+    logger.info("MockDataSource initAsyncProtected")();
     this.initNetworkBlockHeight();
     await this.initPoolsAsync();
     await this.initPoolUsersAsync();
@@ -119,16 +120,13 @@ export class MockDataSource extends BaseDataSource {
   }
 
   async getPoolsAsync(_account?: string): Promise<Pool[]> {
-    await CommonUtil.timeout(2000);
+    await CommonUtil.timeout(1000);
     if (!_account) {
       return this._pools;
     }
     const pools = [];
     for (const p of this._pools) {
-      pools.push({
-        ...p,
-        userInfo: await this.getPoolUserInfoAsync(p.id, _account)
-      })
+      pools.push(await this.getPoolAsync(p.id, _account))
     }
     return pools;
   }
@@ -146,10 +144,15 @@ export class MockDataSource extends BaseDataSource {
 
   async depositAsync(_id: number, _amount: string): Promise<boolean> {
     await CommonUtil.timeout(1000);
-    console.log("Pool id:", _id, "amount:", _amount);
     const pool = this._pools[_id];
-    pool.totalStaked.plus(new BigNumber(_amount));
-    this._emitter.emitPoolDeposit(_id, new BigNumber(_amount), this.getAccount().address);
+    const amount = new BigNumber(_amount).times(new BigNumber(10).pow(pool.stakingToken.decimals));
+    pool.totalStaked = pool.totalStaked.plus(amount);
+    const account = this.getAccount().address;
+    const userInfo = await this.getPoolUserInfoAsync(_id, account);
+    if (userInfo) {
+      userInfo.stakingBalance = userInfo.stakingBalance.plus(amount)
+    }
+    this._emitter.emitPoolDeposit(_id, new BigNumber(_amount), account);
     return true;
   }
 

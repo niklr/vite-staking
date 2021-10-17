@@ -19,10 +19,10 @@ export class GlobalEmitter extends EventEmitter implements IGlobalEmitter {
     this.emit(GlobalEvent.PoolFilterValuesChanged, oldValues, newValues)
   }
   emitPoolDeposit(id: number, amount: BigNumber, account: string): void {
-    this.emit(GlobalEvent.PoolDeposit, id, amount)
+    this.emit(GlobalEvent.PoolDeposit, id, amount, account)
   }
   emitPoolWithdraw(id: number, amount: BigNumber, account: string): void {
-    this.emit(GlobalEvent.PoolWithdraw, id, amount)
+    this.emit(GlobalEvent.PoolWithdraw, id, amount, account)
   }
 }
 
