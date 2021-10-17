@@ -1,5 +1,6 @@
 import { Avatar, Badge, Grid, Skeleton, styled, Typography } from "@mui/material";
 import React from "react";
+import { getCoinUtil } from "../../../../util/coin.util";
 import { Pool } from "../../../../util/types";
 
 interface Props {
@@ -20,6 +21,8 @@ export const Tokens: React.FC<Props> = (props: Props) => {
     backgroundColor: "white",
     border: `1px solid ${theme.palette.grey[600]}`
   }));
+  const coinUtil = getCoinUtil();
+
   return (
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
@@ -27,10 +30,10 @@ export const Tokens: React.FC<Props> = (props: Props) => {
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           badgeContent={
-            <SmallCoin alt={props.pool?.stakingToken.originalSymbol} src={props.pool?.stakingToken.iconUrl ?? ""} />
+            <SmallCoin alt={props.pool?.stakingToken.originalSymbol} src={coinUtil.mapIconUrl(props.pool?.stakingToken.iconUrl)} />
           }
         >
-          <BigCoin alt={props.pool?.rewardToken.originalSymbol} src={props.pool?.rewardToken.iconUrl ?? ""} />
+          <BigCoin alt={props.pool?.rewardToken.originalSymbol} src={coinUtil.mapIconUrl(props.pool?.rewardToken.iconUrl)} />
         </Badge>
       </Grid>
       <Grid item>

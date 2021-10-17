@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { getLogger } from "../../../../util/logger";
 import { Pool, PoolDialogState, PoolDialogType } from "../../../../util/types";
 import { ViteUtil } from "../../../../util/vite.util";
 import { Tokens } from "../tokens";
 import { PoolCountdown } from "../countdown";
 import { PoolDialog } from "../dialog";
+
+const logger = getLogger()
 
 const TransparentPaper = styled(Paper)(
   ({ theme }) => ({
@@ -25,6 +28,12 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
     type: PoolDialogType.DEPOSIT,
     open: false
   });
+
+  useEffect(() => {
+    if (props.pool) {
+      logger.info(`Pool loaded: ${props.pool?.id}`)();
+    }
+  }, [props.pool]);
 
   const showRewardTokens = (decimals: number): string => {
     if (!props.pool?.userInfo) {
