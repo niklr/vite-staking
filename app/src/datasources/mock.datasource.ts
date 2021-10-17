@@ -144,13 +144,16 @@ export class MockDataSource extends BaseDataSource {
     return this._pools.length;
   }
 
-  async depositAsync(_id: string, _amount: string): Promise<boolean> {
-    await CommonUtil.timeout(2000);
+  async depositAsync(_id: number, _amount: string): Promise<boolean> {
+    await CommonUtil.timeout(1000);
     console.log("Pool id:", _id, "amount:", _amount);
+    const pool = this._pools[_id];
+    pool.totalStaked.plus(new BigNumber(_amount));
+    this._emitter.emitPoolDeposit(_id, new BigNumber(_amount), this.getAccount().address);
     return true;
   }
 
-  async withdrawAsync(_id: string, _amount: string): Promise<boolean> {
+  async withdrawAsync(_id: number, _amount: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
 }

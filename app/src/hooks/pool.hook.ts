@@ -1,11 +1,10 @@
 import { useQuery, WatchQueryFetchPolicy } from "@apollo/client";
-import { IConnectedWeb3Context } from "../contexts/connectedWeb3";
 import { GET_POOL_QUERY, GET_POOL_USER_INFO_QUERY } from "../queries/pool";
 import { GetPool, GetPoolVariables } from "../queries/__generated__/GetPool";
 import { GetPoolUserInfo, GetPoolUserInfoVariables } from "../queries/__generated__/GetPoolUserInfo";
 import { Pool, PoolUserInfo } from "../util/types";
 
-export const usePoolHook = (context: IConnectedWeb3Context, id: number, fetchPolicy: WatchQueryFetchPolicy = "network-only") => {
+export const usePoolHook = (id: number, account?: Maybe<string>, fetchPolicy: WatchQueryFetchPolicy = "network-only") => {
   const poolQuery = useQuery<GetPool, GetPoolVariables>(GET_POOL_QUERY, {
     variables: {
       id: id.toString()
@@ -15,7 +14,7 @@ export const usePoolHook = (context: IConnectedWeb3Context, id: number, fetchPol
   const userInfoQuery = useQuery<GetPoolUserInfo, GetPoolUserInfoVariables>(GET_POOL_USER_INFO_QUERY, {
     variables: {
       poolId: id,
-      account: context.account
+      account
     },
     fetchPolicy
   });

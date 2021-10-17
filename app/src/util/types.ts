@@ -96,5 +96,7 @@ export enum PoolDialogType {
 
 export enum GlobalEvent {
   NetworkBlockHeightChanged = 'NetworkBlockHeightChanged',
-  PoolFilterValuesChanged = 'PoolFilterValuesChanged'
+  PoolFilterValuesChanged = 'PoolFilterValuesChanged',
+  PoolDeposit = 'PoolDeposit',
+  PoolWithdraw = 'PoolWithdraw'
 }

@@ -46,11 +46,11 @@ export class ViteDataSource extends BaseDataSource {
     throw new Error("Method not implemented.");
   }
 
-  async depositAsync(_id: string, _amount: string): Promise<boolean> {
+  async depositAsync(_id: number, _amount: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
 
-  async withdrawAsync(_id: string, _amount: string): Promise<boolean> {
+  async withdrawAsync(_id: number, _amount: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
 }

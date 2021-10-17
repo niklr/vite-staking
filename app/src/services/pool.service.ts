@@ -18,8 +18,7 @@ class PoolService {
         amount
       }
     });
-    console.log(result);
-    return Boolean(result.data?.deposit);
+    return Boolean(result.data?.deposit ?? false);
   }
 }
 
