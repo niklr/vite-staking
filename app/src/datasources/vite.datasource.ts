@@ -45,6 +45,14 @@ export class ViteDataSource extends BaseDataSource {
   async getTotalPoolsAsync(): Promise<number> {
     throw new Error("Method not implemented.");
   }
+
+  async depositAsync(_id: string, _amount: string): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
+
+  async withdrawAsync(_id: string, _amount: string): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
 }
 
 const ds = new ViteDataSource();

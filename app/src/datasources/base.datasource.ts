@@ -19,6 +19,8 @@ export interface IDataSource {
   getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>>;
   getTokenAsync(_id: string): Promise<Token>;
   getTotalPoolsAsync(): Promise<number>;
+  depositAsync(_id: string, _amount: string): Promise<boolean>;
+  withdrawAsync(_id: string, _amount: string): Promise<boolean>;
 }
 
 export abstract class BaseDataSource implements IDataSource {
@@ -124,4 +126,8 @@ export abstract class BaseDataSource implements IDataSource {
   abstract getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>>;
 
   abstract getTotalPoolsAsync(): Promise<number>;
+
+  abstract depositAsync(_id: string, _amount: string): Promise<boolean>;
+
+  abstract withdrawAsync(_id: string, _amount: string): Promise<boolean>;
 }

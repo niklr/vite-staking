@@ -43,3 +43,8 @@ extend type Query {
   token(id: ID!): Token!
   totalPools: Int!
 }
+
+extend type Mutation {
+  deposit(id: ID!, amount: String): Boolean!
+  withdraw(id: ID!, amount: String): Boolean!
+}

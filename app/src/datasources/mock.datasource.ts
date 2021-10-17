@@ -143,6 +143,16 @@ export class MockDataSource extends BaseDataSource {
   async getTotalPoolsAsync(): Promise<number> {
     return this._pools.length;
   }
+
+  async depositAsync(_id: string, _amount: string): Promise<boolean> {
+    await CommonUtil.timeout(2000);
+    console.log("Pool id:", _id, "amount:", _amount);
+    return true;
+  }
+
+  async withdrawAsync(_id: string, _amount: string): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
 }
 
 const ds = new MockDataSource();

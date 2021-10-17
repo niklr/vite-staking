@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { GraphQLScalarType } from 'graphql';
 import { getCommonContext } from '../contexts/common';
 import { IDataSource } from '../datasources';
+import { PoolMutations } from '../mutations';
 import { NetworkQueries, PoolQueries, TokenQueries } from '../queries';
 
 export type ApolloContext = {
@@ -52,6 +53,9 @@ const resolvers = {
     ...NetworkQueries,
     ...PoolQueries,
     ...TokenQueries
+  },
+  Mutation: {
+    ...PoolMutations
   }
 };
 

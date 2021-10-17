@@ -3,6 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { Pool, PoolDialogState } from '../../../../util/types';
 import { ClickOnceButton } from '../../../common/components/click-once-button';
 import { SnackbarUtil } from '../../../../util/snackbar.util';
+import { getPoolService } from '../../../../services/pool.service';
 
 interface Props {
   pool: Pool
@@ -12,6 +13,8 @@ interface Props {
 
 export const PoolDepositDialog: React.FC<Props> = (props: Props) => {
   const [amount, setAmount] = useState<string>("");
+  const poolService = getPoolService();
+
   const handleClose = () => {
     setAmount("");
     props.setState({
@@ -26,7 +29,7 @@ export const PoolDepositDialog: React.FC<Props> = (props: Props) => {
 
   const handleConfirmAsync = async () => {
     try {
-      throw new Error("Not implemented yet.");
+      await poolService.depositAsync(props.pool.id, amount);
     } catch (error) {
       SnackbarUtil.enqueueError(error);
     }
