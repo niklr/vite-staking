@@ -16,6 +16,7 @@ const TransparentPaper = styled(Paper)(
   }));
 
 interface Props {
+  account?: Maybe<string>
   pool?: Maybe<Pool>
 }
 
@@ -168,42 +169,47 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                           {showRewardTokens(18)}
                         </Typography>
                       )}
-                      <Button variant="contained" size="large" sx={{ ml: 2 }} disabled onClick={handleClickClaim}>Claim</Button>
+                      <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickClaim} disabled={!props.pool || !props.account}>Claim</Button>
                     </Box>
                   </TransparentPaper>
                 </Grid>
-                <Grid item xs={12} md={6} lg={5} hidden>
-                  <TransparentPaper variant="outlined">
-                    <Typography variant="body2" color="text.secondary">
-                      Start staking
-                    </Typography>
-                    <Button variant="contained" size="large" fullWidth>Connect wallet</Button>
-                  </TransparentPaper>
-                </Grid>
-                <Grid item xs={12} md={6} lg={5} zeroMinWidth>
-                  <TransparentPaper variant="outlined">
-                    <Typography variant="body2" color="text.secondary">
-                      Staked
-                    </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      {!props.pool ? (
-                        <Skeleton animation="wave" height={30} width="100%" />
-                      ) : (
-                        <Typography sx={{ width: "100%" }} noWrap>
-                          {showStaked(18)}
+                {!props.account ? (
+                  <Grid item xs={12} md={6} lg={5}>
+                    <TransparentPaper variant="outlined">
+                      <Typography variant="body2" color="text.secondary">
+                        Start staking
+                      </Typography>
+                      <Button variant="contained" size="large" fullWidth disabled={!props.pool}>Connect wallet</Button>
+                    </TransparentPaper>
+                  </Grid>
+                ) : (
+                  <>
+                    <Grid item xs={12} md={6} lg={5} zeroMinWidth>
+                      <TransparentPaper variant="outlined">
+                        <Typography variant="body2" color="text.secondary">
+                          Staked
                         </Typography>
-                      )}
-                      <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickWithdraw} disabled={!props.pool}>
-                        Withdraw
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          {!props.pool ? (
+                            <Skeleton animation="wave" height={30} width="100%" />
+                          ) : (
+                            <Typography sx={{ width: "100%" }} noWrap>
+                              {showStaked(18)}
+                            </Typography>
+                          )}
+                          <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickWithdraw} disabled={!props.pool || !props.account}>
+                            Withdraw
+                          </Button>
+                        </Box>
+                      </TransparentPaper>
+                    </Grid>
+                    <Grid item xs={12} md sx={{ display: "flex", alignItems: "center" }}>
+                      <Button variant="contained" size="large" fullWidth onClick={handleClickDeposit} disabled={!props.pool || !props.account}>
+                        Stake
                       </Button>
-                    </Box>
-                  </TransparentPaper>
-                </Grid>
-                <Grid item xs={12} md sx={{ display: "flex", alignItems: "center" }}>
-                  <Button variant="contained" size="large" fullWidth onClick={handleClickDeposit} disabled={!props.pool}>
-                    Stake
-                  </Button>
-                </Grid>
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </Grid>
           </Grid>

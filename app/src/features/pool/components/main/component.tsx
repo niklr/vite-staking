@@ -21,7 +21,7 @@ export const Pools: React.FC = () => {
     <Container sx={{ pt: 6, pb: 6 }} maxWidth="lg">
       <Grid container spacing={2} justifyContent="center" alignItems="center">
         <PoolFilter></PoolFilter>
-        <PoolList pools={poolQuery.data?.pools as Maybe<Pool[]>}></PoolList>
+        <PoolList account={context.account} pools={poolQuery.data?.pools as Maybe<Pool[]>}></PoolList>
       </Grid>
     </Container>
   );

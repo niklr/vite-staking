@@ -11,6 +11,7 @@ import { PoolListItem } from "../list-item";
 const logger = getLogger()
 
 interface Props {
+  account?: Maybe<string>
   pools?: Maybe<Pool[]>
 }
 
@@ -64,7 +65,7 @@ export const PoolList: React.FC<Props> = (props: Props) => {
         <>
           {pools?.map((p: Pool) => (
             <Grid item key={p.id} xs={12} md={10}>
-              <PoolListItem pool={p}></PoolListItem>
+              <PoolListItem account={props.account} pool={p}></PoolListItem>
             </Grid>
           ))}
         </>
