@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
+import BigNumber from "bignumber.js";
+import React, { useEffect, useState } from "react";
 import { getLogger } from "../../../../util/logger";
 import { Pool, PoolDialogState, PoolDialogType } from "../../../../util/types";
 import { ViteUtil } from "../../../../util/vite.util";
-import { Tokens } from "../tokens";
 import { PoolCountdown } from "../countdown";
 import { PoolDialog } from "../dialog";
+import { Tokens } from "../tokens";
 
 const logger = getLogger()
 
@@ -28,18 +29,21 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
     type: PoolDialogType.DEPOSIT,
     open: false
   });
+  const [rewardTokens, setRewardTokens] = useState<BigNumber>(new BigNumber(0));
 
   useEffect(() => {
     if (props.pool) {
       logger.info(`Pool loaded: ${props.pool?.id}`)();
+      setRewardTokens(ViteUtil.calculateRewardTokens(props.pool));
+    } else {
+      setRewardTokens(new BigNumber(0));
     }
   }, [props.pool]);
 
   const showRewardTokens = (decimals: number): string => {
-    if (!props.pool?.userInfo) {
+    if (!props.pool) {
       return "0";
     }
-    const rewardTokens = ViteUtil.calculateRewardTokens(props.pool);
     return ViteUtil.formatBigNumber(rewardTokens, props.pool.rewardToken.decimals, decimals);
   }
 
@@ -86,6 +90,14 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
       type: PoolDialogType.CLAIM,
       open: true
     })
+  }
+
+  const canClaim = () => {
+    return !!props.pool && !!props.account && rewardTokens.gt(0)
+  }
+
+  const canWithdraw = () => {
+    return !!props.pool && !!props.account && props.pool.userInfo?.stakingBalance.gt(0)
   }
 
   return (
@@ -178,7 +190,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                           {showRewardTokens(18)}
                         </Typography>
                       )}
-                      <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickClaim} disabled={!props.pool || !props.account}>Claim</Button>
+                      <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickClaim} disabled={!canClaim}>Claim</Button>
                     </Box>
                   </TransparentPaper>
                 </Grid>
@@ -206,7 +218,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                               {showStaked(18)}
                             </Typography>
                           )}
-                          <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickWithdraw} disabled={!props.pool || !props.account}>
+                          <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickWithdraw} disabled={!canWithdraw}>
                             Withdraw
                           </Button>
                         </Box>

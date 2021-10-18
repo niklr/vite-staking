@@ -1,5 +1,5 @@
-import React from 'react';
 import { LoadingButton } from '@mui/lab';
+import React from 'react';
 
 interface Props {
   children: React.ReactNode
@@ -8,6 +8,7 @@ interface Props {
   color?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning',
   fullWidth?: boolean
   autoFocus?: boolean
+  disabled?: boolean
   callbackFn: () => Promise<void>
 }
 
@@ -32,6 +33,7 @@ export const ClickOnceButton: React.FC<Props> = (props: Props) => {
       color={props.color ?? "primary"}
       fullWidth={props.fullWidth}
       onClick={handleClick}
+      disabled={props.disabled}
     >
       {props.children}
     </LoadingButton>

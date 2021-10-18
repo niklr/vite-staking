@@ -146,18 +146,31 @@ export class MockDataSource extends BaseDataSource {
     await CommonUtil.timeout(1000);
     const pool = this._pools[_id];
     const amount = new BigNumber(_amount).times(new BigNumber(10).pow(pool.stakingToken.decimals));
-    pool.totalStaked = pool.totalStaked.plus(amount);
     const account = this.getAccount().address;
     const userInfo = await this.getPoolUserInfoAsync(_id, account);
     if (userInfo) {
-      userInfo.stakingBalance = userInfo.stakingBalance.plus(amount)
+      userInfo.stakingBalance = userInfo.stakingBalance.plus(amount);
     }
+    pool.totalStaked = pool.totalStaked.plus(amount);
     this._emitter.emitPoolDeposit(_id, new BigNumber(_amount), account);
     return true;
   }
 
   async withdrawAsync(_id: number, _amount: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    await CommonUtil.timeout(1000);
+    const pool = this._pools[_id];
+    const amount = new BigNumber(_amount).times(new BigNumber(10).pow(pool.stakingToken.decimals));
+    const account = this.getAccount().address;
+    const userInfo = await this.getPoolUserInfoAsync(_id, account);
+    if (userInfo) {
+      if (amount.gt(userInfo.stakingBalance)) {
+        throw new Error("Insufficient balance")
+      }
+      userInfo.stakingBalance = userInfo.stakingBalance.minus(amount)
+    }
+    pool.totalStaked = pool.totalStaked.minus(amount);
+    this._emitter.emitPoolWithdraw(_id, new BigNumber(_amount), account);
+    return true;
   }
 }
 

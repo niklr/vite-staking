@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Input, InputAdornment, InputLabel } from '@mui/material';
-import { Pool, PoolDialogState } from '../../../../util/types';
-import { ClickOnceButton } from '../../../common/components/click-once-button';
-import { SnackbarUtil } from '../../../../util/snackbar.util';
+import BigNumber from 'bignumber.js';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getPoolService } from '../../../../services/pool.service';
+import { CommonUtil } from '../../../../util/common.util';
+import { SnackbarUtil } from '../../../../util/snackbar.util';
+import { Pool, PoolDialogState } from '../../../../util/types';
 import { ViteUtil } from '../../../../util/vite.util';
+import { ClickOnceButton } from '../../../common/components/click-once-button';
 
 interface Props {
   pool: Pool
@@ -21,11 +23,17 @@ export const PoolWithdrawDialog: React.FC<Props> = (props: Props) => {
   }, [props.pool])
 
   const [amount, setAmount] = useState<string>(getStakedAmount());
+  const [disabled, setDisabled] = useState<boolean>(false);
   const poolService = getPoolService();
+
+  const changeAmount = (amount: string) => {
+    setAmount(amount);
+    setDisabled(CommonUtil.isNullOrWhitespace(amount) || new BigNumber(amount).lte(0));
+  }
 
   useEffect(() => {
     if (props.state.open) {
-      setAmount(getStakedAmount())
+      changeAmount(getStakedAmount())
     }
   }, [props.state, getStakedAmount])
 
@@ -37,7 +45,7 @@ export const PoolWithdrawDialog: React.FC<Props> = (props: Props) => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value);
+    changeAmount(event.target.value);
   };
 
   const handleConfirmAsync = async () => {
@@ -70,7 +78,7 @@ export const PoolWithdrawDialog: React.FC<Props> = (props: Props) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <ClickOnceButton size="medium" color="primary" callbackFn={handleConfirmAsync}>
+        <ClickOnceButton size="medium" color="primary" callbackFn={handleConfirmAsync} disabled={disabled}>
           Confirm
         </ClickOnceButton>
       </DialogActions>

@@ -64,14 +64,16 @@ export const PoolList: React.FC<Props> = (props: Props) => {
         }
       }
     }
-    const handleDepositEvent = async (id: number, amount: BigNumber, account: string) => {
+    const handlePoolEvent = async (id: number, amount: BigNumber, account: string) => {
       const pool = await commonContext.datasource.getPoolAsync(id, account)
       replacePool(pool)
     }
-    emitter.on(GlobalEvent.PoolDeposit, handleDepositEvent)
+    emitter.on(GlobalEvent.PoolDeposit, handlePoolEvent)
+    emitter.on(GlobalEvent.PoolWithdraw, handlePoolEvent)
     return () => {
       logger.info('emitter.off', GlobalEvent.PoolDeposit)()
-      emitter.off(GlobalEvent.PoolDeposit, handleDepositEvent)
+      emitter.off(GlobalEvent.PoolDeposit, handlePoolEvent)
+      emitter.off(GlobalEvent.PoolWithdraw, handlePoolEvent)
     };
   }, [emitter, allPools, commonContext])
 
