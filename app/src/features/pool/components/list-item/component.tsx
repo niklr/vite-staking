@@ -54,8 +54,8 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
     return ViteUtil.formatBigNumber(rewardTokens, props.pool.rewardToken.decimals, decimals);
   }
 
-  const showApr = (): string => {
-    if (!props.pool) {
+  const showApr = (): Maybe<string> => {
+    if (!props.pool || !props.pool.apr) {
       return "0";
     }
     return props.pool.apr.toFormat(2);
@@ -134,7 +134,15 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                     <Skeleton animation="wave" height={25} width="60px" />
                   ) : (
                     <Typography variant="subtitle1">
-                      {showApr()}%
+                      {props.pool.apr ? (
+                        <>
+                          {showApr()}%
+                        </>
+                      ) : (
+                        <>
+                          -
+                        </>
+                      )}
                     </Typography>
                   )}
                 </Grid>

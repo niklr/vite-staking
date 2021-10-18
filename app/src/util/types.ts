@@ -29,7 +29,7 @@ export type Pool = {
   id: number
   stakingToken: Token
   rewardToken: Token
-  apr: BigNumber
+  apr?: Maybe<BigNumber>
   totalStaked: BigNumber
   totalRewards: BigNumber
   startBlock: BigNumber

@@ -36,7 +36,7 @@ export abstract class FilterUtil {
       case PoolSortTypes[PoolSortType.APR].type:
         return orderBy(
           pools,
-          (pool: Pool) => pool.apr.toNumber(),
+          (pool: Pool) => pool.apr?.toNumber() ?? 0,
           'desc',
         )
       case PoolSortTypes[PoolSortType.TOTAL_STAKED].type:

@@ -40,12 +40,11 @@ export class MockDataSource extends BaseDataSource {
       const p: ContractPool = pools[index];
       const stakingToken = await this.getTokenAsync(p.stakingTokenId);
       const rewardToken = await this.getTokenAsync(p.rewardTokenId);
-      this._pools.push({
+      const pool: Pool = {
         __typename: TypeNames.Pool,
         id: index,
         stakingToken,
         rewardToken,
-        apr: this.getApr(index),
         totalStaked: new BigNumber(p.totalStakingBalance),
         totalRewards: new BigNumber(p.totalRewardBalance),
         startBlock: new BigNumber(p.startBlock),
@@ -55,18 +54,9 @@ export class MockDataSource extends BaseDataSource {
         rewardPerPeriod: new BigNumber(p.rewardPerPeriod),
         rewardPerToken: new BigNumber(p.rewardPerToken),
         paidOut: new BigNumber(p.paidOut)
-      })
-    }
-  }
-
-  private getApr(poolId: number): BigNumber {
-    switch (poolId) {
-      case 0:
-        return new BigNumber(2.12345678)
-      case 1:
-        return new BigNumber(3.55555555)
-      default:
-        return new BigNumber(0)
+      };
+      pool.apr = await this.getAprAsync(pool);
+      this._pools.push(pool);
     }
   }
 

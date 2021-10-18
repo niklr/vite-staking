@@ -1,6 +1,8 @@
 import BigNumber from "bignumber.js";
+import { CoingeckoClient, getCoingeckoClient } from "../clients/coingecko.client";
 import { getVitexClient, VitexClient } from "../clients/vitex.client";
 import { UnknownToken } from "../common/constants";
+import { CoinUtil, getCoinUtil } from "../util/coin.util";
 import { getEmitter, IGlobalEmitter } from "../util/emitter.util";
 import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
@@ -27,14 +29,18 @@ export interface IDataSource {
 export abstract class BaseDataSource implements IDataSource {
   protected readonly _emitter: IGlobalEmitter;
   private readonly _walletManager: WalletManager;
+  private readonly _coingeckoClient: CoingeckoClient;
   private readonly _vitexClient: VitexClient;
+  private readonly _coinUtil: CoinUtil;
   private readonly _tokens: Map<string, Token>;
   private _moment: MomentUtil = new MomentUtil();
 
   constructor() {
     this._emitter = getEmitter();
     this._walletManager = getWalletManager();
+    this._coingeckoClient = getCoingeckoClient();
     this._vitexClient = getVitexClient();
+    this._coinUtil = getCoinUtil();
     this._tokens = new Map<string, Token>();
   }
 
@@ -53,6 +59,19 @@ export abstract class BaseDataSource implements IDataSource {
     const account = this._walletManager.getActiveAccount();
     Ensure.notNull(account, "account", "Please connect your wallet first.");
     return account as WalletAccount;
+  }
+
+  async getAprAsync(pool: Pool): Promise<Maybe<BigNumber>> {
+    if (pool.latestRewardBlock === pool.endBlock) {
+      // pool is closed, should not display numeric APR.
+      return undefined;
+    }
+    const stakingTokenPrice = await this._coingeckoClient.getTokenPriceUSDAsync(pool.stakingToken.name);
+    const rewardTokenPrice = await this._coingeckoClient.getTokenPriceUSDAsync(pool.rewardToken.name);
+    const totalTime = pool.endBlock.minus(pool.startBlock);
+    const secondsInYear = new BigNumber(365 * 24 * 60 * 60);
+    const toPercent = new BigNumber(100);
+    return rewardTokenPrice.times(pool.totalRewards).dividedBy(stakingTokenPrice.times(pool.totalStaked).times(totalTime)).times(secondsInYear).times(toPercent);
   }
 
   async getEndTimestampAsync(endBlock: BigNumber): Promise<number> {
@@ -88,7 +107,7 @@ export abstract class BaseDataSource implements IDataSource {
           originalSymbol: result.originalSymbol,
           decimals: result.tokenDecimals,
           iconUrl: result.urlIcon,
-          url: "https://coinmarketcap.com/currencies/" + result.name.replace(" ", "-")
+          url: "https://coinmarketcap.com/currencies/" + this._coinUtil.mapCoinMarketCapName(result.name)
         }
         this._tokens.set(id, token);
         return token;

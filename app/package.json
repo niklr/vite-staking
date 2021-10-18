@@ -14,6 +14,7 @@
     "@vite/vitejs-ws": "^2.3.14",
     "axios": "^0.22.0",
     "bignumber.js": "^9.0.1",
+    "coingecko-api": "^1.0.10",
     "graphql": "^15.6.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
