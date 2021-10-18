@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Input, InputAdornment, InputLabel } from '@mui/material';
 import { Pool, PoolDialogState } from '../../../../util/types';
 import { ClickOnceButton } from '../../../common/components/click-once-button';
@@ -15,8 +15,13 @@ export const PoolDepositDialog: React.FC<Props> = (props: Props) => {
   const [amount, setAmount] = useState<string>("");
   const poolService = getPoolService();
 
+  useEffect(() => {
+    if (props.state.open) {
+      setAmount("")
+    }
+  }, [props.state])
+
   const handleClose = () => {
-    setAmount("");
     props.setState({
       ...props.state,
       open: false

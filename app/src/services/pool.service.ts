@@ -1,7 +1,8 @@
 import { ApolloClient, FetchPolicy, NormalizedCacheObject } from "@apollo/client";
 import { getApolloClient } from "../clients/apollo.client";
-import { DEPOSIT_MUTATION } from "../mutations";
+import { DEPOSIT_MUTATION, WITHDRAW_MUTATION } from "../mutations";
 import { Deposit, DepositVariables } from "../mutations/__generated__/Deposit";
+import { Withdraw, WithdrawVariables } from "../mutations/__generated__/Withdraw";
 import { GET_POOL_QUERY, GET_POOL_USER_INFO_QUERY } from "../queries";
 import { GetPool, GetPoolVariables } from "../queries/__generated__/GetPool";
 import { GetPoolUserInfo, GetPoolUserInfoVariables } from "../queries/__generated__/GetPoolUserInfo";
@@ -56,6 +57,17 @@ class PoolService {
       }
     });
     return Boolean(result.data?.deposit ?? false);
+  }
+
+  async withdrawAsync(id: number, amount: string): Promise<boolean> {
+    const result = await this._apollo.mutate<Withdraw, WithdrawVariables>({
+      mutation: WITHDRAW_MUTATION,
+      variables: {
+        id: id.toString(),
+        amount
+      }
+    });
+    return Boolean(result.data?.withdraw ?? false);
   }
 }
 
