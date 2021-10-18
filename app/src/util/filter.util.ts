@@ -13,13 +13,13 @@ export abstract class FilterUtil {
     let filtered: Pool[] = openPools;
     if (filter.showLive) {
       if (filter.stakedOnly) {
-        filtered = openPools.filter(e => !!e.userInfo);
+        filtered = openPools.filter(e => !!e.userInfo && e.userInfo.stakingBalance.gt(0));
       } else {
         filtered = openPools;
       }
     } else {
       if (filter.stakedOnly) {
-        filtered = closedPools.filter(e => !!e.userInfo);
+        filtered = closedPools.filter(e => !!e.userInfo && e.userInfo.stakingBalance.gt(0));
       } else {
         filtered = closedPools;
       }
@@ -36,13 +36,13 @@ export abstract class FilterUtil {
       case PoolSortTypes[PoolSortType.APR].type:
         return orderBy(
           pools,
-          (pool: Pool) => pool.apr,
+          (pool: Pool) => pool.apr.toNumber(),
           'desc',
         )
       case PoolSortTypes[PoolSortType.TOTAL_STAKED].type:
         return orderBy(
           pools,
-          (pool: Pool) => pool.totalStaked,
+          (pool: Pool) => pool.totalStaked.toNumber(),
           'desc',
         )
       case PoolSortTypes[PoolSortType.DEFAULT].type:

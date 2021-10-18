@@ -30,15 +30,22 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
     open: false
   });
   const [rewardTokens, setRewardTokens] = useState<BigNumber>(new BigNumber(0));
+  const [canClaim, setCanClaim] = useState<boolean>(false);
+  const [canWithdraw, setCanWithdraw] = useState<boolean>(false);
 
   useEffect(() => {
     if (props.pool) {
       logger.info(`Pool loaded: ${props.pool?.id}`)();
-      setRewardTokens(ViteUtil.calculateRewardTokens(props.pool));
+      const newRewardTokens = ViteUtil.calculateRewardTokens(props.pool);
+      setRewardTokens(newRewardTokens);
+      setCanClaim(!!props.pool && !!props.account && newRewardTokens.gt(0));
+      setCanWithdraw(!!props.pool && !!props.account && (props.pool.userInfo?.stakingBalance.gt(0) ?? false))
     } else {
       setRewardTokens(new BigNumber(0));
+      setCanClaim(false);
+      setCanWithdraw(false);
     }
-  }, [props.pool]);
+  }, [props.pool, props.account]);
 
   const showRewardTokens = (decimals: number): string => {
     if (!props.pool) {
@@ -90,14 +97,6 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
       type: PoolDialogType.CLAIM,
       open: true
     })
-  }
-
-  const canClaim = () => {
-    return !!props.pool && !!props.account && rewardTokens.gt(0)
-  }
-
-  const canWithdraw = () => {
-    return !!props.pool && !!props.account && props.pool.userInfo?.stakingBalance.gt(0)
   }
 
   return (
