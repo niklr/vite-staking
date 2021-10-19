@@ -5,6 +5,14 @@ export interface GenericType {
   type: string;
 }
 
+export type Contract = {
+  address: string
+  contractName: string
+  binary: string
+  offChain: string
+  abi: any[]
+}
+
 export type Network = {
   id: number
   networkId: number

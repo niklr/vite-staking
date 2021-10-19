@@ -1,5 +1,6 @@
 import { ViteClient } from "../clients/vite.client";
 import { getMockDataSource, getViteDataSource, IDataSource } from "../datasources";
+import { getPoolService, PoolService } from "../services/pool.service";
 import { getLogger } from "../util/logger";
 import { Network } from "../util/types";
 
@@ -7,10 +8,12 @@ const logger = getLogger();
 
 export class CommonContext {
   private readonly _vite: ViteClient;
+  private readonly _poolService: PoolService;
   private _datasource: IDataSource;
 
   constructor() {
     this._vite = new ViteClient();
+    this._poolService = getPoolService();
     this._datasource = getMockDataSource();
   }
 
@@ -24,12 +27,14 @@ export class CommonContext {
         break;
     }
     await this._datasource.initAsync();
+    await this._poolService.initAsync();
     await this._vite.initAsync(network);
   }
 
   dispose(): void {
     logger.info("Disposing CommonContext")();
     this._datasource.dispose();
+    this._poolService.dispose();
     this._vite.dispose();
   }
 

@@ -3,7 +3,8 @@ import { GenericType, Network, PoolFilterValues, PoolSortType, Token } from "../
 export const CommonConstants = {
   APP_NAME: 'VITE Staking Pools',
   WEB_WALLET_STORAGE_SPACE: 'VSP_WEB_WALLET',
-  SESSION_WALLET_STORAGE_SPACE: 'VSP_SESSION_WALLET'
+  SESSION_WALLET_STORAGE_SPACE: 'VSP_SESSION_WALLET',
+  POOLS_CONTRACT_ADDRESS: 'vite_5b2fc567f4fe1b807307b4360a76f94266cbe702672dfc7257'
 }
 
 export const Networks: Network[] = [

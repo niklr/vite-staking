@@ -14,16 +14,8 @@ export type ApolloContext = {
 }
 
 export class ApolloClientWrapper extends ApolloClient<NormalizedCacheObject> {
-  private readonly _datasource: IDataSource;
-
-  constructor(options: any) {
-    super(options);
-    const commonContext = getCommonContext();
-    this._datasource = commonContext.datasource;
-  }
-
   get datasource(): IDataSource {
-    return this._datasource;
+    return getCommonContext().datasource;
   }
 }
 
@@ -47,7 +39,7 @@ const bigNumberScalar = new GraphQLScalarType({
   }
 });
 
-const resolvers = {
+const resolvers: any = {
   BigNumber: bigNumberScalar,
   Query: {
     ...NetworkQueries,
