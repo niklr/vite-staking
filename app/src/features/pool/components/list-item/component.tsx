@@ -4,6 +4,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link,
 import BigNumber from "bignumber.js";
 import React, { useEffect, useState } from "react";
 import { getPoolService } from '../../../../services/pool.service';
+import { getEmitter } from '../../../../util/emitter.util';
 import { getLogger } from "../../../../util/logger";
 import { SnackbarUtil } from '../../../../util/snackbar.util';
 import { Pool, PoolDialogState, PoolDialogType } from "../../../../util/types";
@@ -36,6 +37,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
   const [canClaim, setCanClaim] = useState<boolean>(false);
   const [canWithdraw, setCanWithdraw] = useState<boolean>(false);
   const poolService = getPoolService();
+  const emitter = getEmitter();
 
   useEffect(() => {
     if (props.pool) {
@@ -77,6 +79,10 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
       return "0";
     }
     return ViteUtil.formatBigNumber(props.pool.userInfo.stakingBalance, props.pool.stakingToken.decimals, decimals);
+  }
+
+  const handleConnectWallet = () => {
+    emitter.emitConnectWalletDialog(true);
   }
 
   const handleClickDeposit = () => {
@@ -217,7 +223,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                       <Typography variant="body2" color="text.secondary">
                         Start staking
                       </Typography>
-                      <Button variant="contained" size="large" fullWidth disabled={!props.pool}>Connect wallet</Button>
+                      <Button variant="contained" size="large" fullWidth disabled={!props.pool} onClick={handleConnectWallet}>Connect wallet</Button>
                     </TransparentPaper>
                   </Grid>
                 ) : (

@@ -104,6 +104,7 @@ export enum PoolDialogType {
 
 export enum GlobalEvent {
   ConfirmTransactionDialog = 'ConfirmTransactionDialog',
+  ConnectWalletDialog = 'ConnectWalletDialog',
   NetworkBlockHeightChanged = 'NetworkBlockHeightChanged',
   PoolFilterValuesChanged = 'PoolFilterValuesChanged',
   PoolDeposit = 'PoolDeposit',

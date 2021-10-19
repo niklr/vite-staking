@@ -1,11 +1,11 @@
-import React from 'react';
-import { AppBar, Button, Chip, styled, Toolbar, tooltipClasses, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { AppBar, Button, Chip, styled, Toolbar, tooltipClasses, Typography } from '@mui/material';
+import React from 'react';
 import { CommonConstants } from '../../../../common/constants';
 import { useConnectedWeb3Context } from '../../../../contexts/connectedWeb3';
 import { CommonUtil } from '../../../../util/common.util';
-import { LoginDialog } from '../../../main/components/login';
 import { BootstrapTooltip } from '../../../common/components/tooltip';
+import { LoginDialog } from '../../../main/components/login';
 import { NetworkList } from '../../../main/components/network-list';
 
 const Root = styled('div')(
@@ -62,7 +62,7 @@ export const Header: React.FC = (props: any) => {
               <Button color="inherit" onClick={handleClickLogin}>
                 Login
               </Button>
-              <LoginDialog open={loginOpen} onClose={handleLoginClose}></LoginDialog>
+              <LoginDialog open={loginOpen} setOpen={setLoginOpen} onClose={handleLoginClose}></LoginDialog>
             </>
           )}
         </Toolbar>
