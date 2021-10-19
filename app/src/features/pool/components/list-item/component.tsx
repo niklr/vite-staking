@@ -3,9 +3,12 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useEffect, useState } from "react";
+import { getPoolService } from '../../../../services/pool.service';
 import { getLogger } from "../../../../util/logger";
+import { SnackbarUtil } from '../../../../util/snackbar.util';
 import { Pool, PoolDialogState, PoolDialogType } from "../../../../util/types";
 import { ViteUtil } from "../../../../util/vite.util";
+import { ClickOnceButton } from '../../../common/components/click-once-button';
 import { PoolCountdown } from "../countdown";
 import { PoolDialog } from "../dialog";
 import { Tokens } from "../tokens";
@@ -32,6 +35,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
   const [rewardTokens, setRewardTokens] = useState<BigNumber>(new BigNumber(0));
   const [canClaim, setCanClaim] = useState<boolean>(false);
   const [canWithdraw, setCanWithdraw] = useState<boolean>(false);
+  const poolService = getPoolService();
 
   useEffect(() => {
     if (props.pool) {
@@ -91,12 +95,14 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const handleClickClaim = () => {
-    setDialogState({
-      ...dialogState,
-      type: PoolDialogType.CLAIM,
-      open: true
-    })
+  const handleClickClaimAsync = async () => {
+    try {
+      if (props.pool) {
+        await poolService.withdrawAsync(props.pool.id, "0");
+      }
+    } catch (error) {
+      SnackbarUtil.enqueueError(error);
+    }
   }
 
   return (
@@ -197,7 +203,11 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                           {showRewardTokens(18)}
                         </Typography>
                       )}
-                      <Button variant="contained" size="large" sx={{ ml: 2 }} onClick={handleClickClaim} disabled={!canClaim}>Claim</Button>
+                      <Box sx={{ ml: 2 }} >
+                        <ClickOnceButton variant="contained" size="large" callbackFn={handleClickClaimAsync} disabled={!canClaim}>
+                          Claim
+                        </ClickOnceButton>
+                      </Box>
                     </Box>
                   </TransparentPaper>
                 </Grid>

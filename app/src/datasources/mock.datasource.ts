@@ -159,7 +159,7 @@ export class MockDataSource extends BaseDataSource {
 
     // increase rewardPerToken by reward amount over period since previous reward block.
     const period = latestBlock.minus(pool.latestRewardBlock);
-    const latestReward = pool.rewardPerPeriod.times(period).times(1e36).div(pool.totalStaked);
+    const latestReward = pool.rewardPerPeriod.times(period).times(new BigNumber(10).pow(pool.rewardToken.decimals)).div(pool.totalStaked);
     pool.rewardPerToken = pool.rewardPerToken.plus(latestReward);
 
     pool.latestRewardBlock = latestBlock;
@@ -176,12 +176,12 @@ export class MockDataSource extends BaseDataSource {
     if (userInfo) {
       // dispense rewards
       if (userInfo.stakingBalance.gt(0)) {
-        const pendingAmount = userInfo.stakingBalance.times(pool.rewardPerToken).div(1e36).minus(userInfo.rewardDebt);
+        const pendingAmount = userInfo.stakingBalance.times(pool.rewardPerToken).div(new BigNumber(10).pow(pool.rewardToken.decimals)).minus(userInfo.rewardDebt);
         pool.paidOut = pool.paidOut.plus(pendingAmount);
       }
       // update balances & recompute rewardDebt
       userInfo.stakingBalance = userInfo.stakingBalance.plus(amount);
-      userInfo.rewardDebt = userInfo.stakingBalance.times(pool.rewardPerToken).div(1e36);
+      userInfo.rewardDebt = userInfo.stakingBalance.times(pool.rewardPerToken).div(new BigNumber(10).pow(pool.rewardToken.decimals));
     }
     pool.totalStaked = pool.totalStaked.plus(amount);
     this._emitter.emitPoolDeposit(_id, new BigNumber(_amount), account);
@@ -204,13 +204,13 @@ export class MockDataSource extends BaseDataSource {
     }
 
     // dispense rewards
-    const pendingAmount = userInfo.stakingBalance.times(pool.rewardPerToken).div(1e36).minus(userInfo.rewardDebt);
+    const pendingAmount = userInfo.stakingBalance.times(pool.rewardPerToken).div(new BigNumber(10).pow(pool.rewardToken.decimals)).minus(userInfo.rewardDebt);
     pool.paidOut = pool.paidOut.plus(pendingAmount);
 
     // update balances & recompute rewardDebt
     userInfo.stakingBalance = userInfo.stakingBalance.minus(amount);
     pool.totalStaked = pool.totalStaked.minus(amount);
-    userInfo.rewardDebt = userInfo.stakingBalance.times(pool.rewardPerToken).div(1e36);
+    userInfo.rewardDebt = userInfo.stakingBalance.times(pool.rewardPerToken).div(new BigNumber(10).pow(pool.rewardToken.decimals));
 
     this._emitter.emitPoolWithdraw(_id, new BigNumber(_amount), account);
     return true;
