@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect } from 'react';
-import { getCommonContext } from '../../../../contexts/common';
+import { getViteClient } from '../../../../clients/vite.client';
 import { getEmitter } from '../../../../util/emitter.util';
 import { GlobalEvent } from '../../../../util/types';
 import { QrCode } from '../qrcode';
@@ -14,7 +14,7 @@ interface Props {
 
 export const LoginDialog: React.FC<Props> = (props: Props) => {
   const { onClose, open, setOpen } = props;
-  const commonContext = getCommonContext();
+  const viteClient = getViteClient();
   const emitter = getEmitter();
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const LoginDialog: React.FC<Props> = (props: Props) => {
           Scan the QR code via Vite Wallet App
         </DialogContentText>
         <Box sx={{ mt: 2, textAlign: "center" }}>
-          <QrCode text={commonContext.vite.connector?.uri}></QrCode>
+          <QrCode text={viteClient.connector?.uri}></QrCode>
         </Box>
       </DialogContent>
     </Dialog>

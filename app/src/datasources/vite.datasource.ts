@@ -1,22 +1,30 @@
 import BigNumber from "bignumber.js";
 import { getViteClient, ViteClient } from "../clients/vite.client";
+import { CommonConstants } from "../common/constants";
+import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
-import { Pool, PoolUserInfo } from "../util/types";
+import { Contract, Pool, PoolUserInfo } from "../util/types";
 import { BaseDataSource } from "./base.datasource";
 
 const logger = getLogger();
 
 export class ViteDataSource extends BaseDataSource {
+  private readonly _fileUtil: FileUtil;
   private readonly _client: ViteClient;
+  private _contract?: Contract;
 
-  constructor() {
+  constructor(fileUtil: FileUtil = new BrowserFileUtil()) {
     super();
+    this._fileUtil = fileUtil;
     this._client = getViteClient();
     logger.info("ViteDataSource loaded")();
   }
 
   protected async initAsyncProtected(): Promise<void> {
-    await Promise.resolve();
+    const contract = await this._fileUtil.readFileAsync('./assets/contracts/vite_staking_pools.json');
+    this._contract = JSON.parse(contract) as Contract;
+    this._contract.address = CommonConstants.POOLS_CONTRACT_ADDRESS
+    logger.info(`Contract ${this._contract?.contractName} loaded`)();
   }
 
   protected disposeProtected(): void {
