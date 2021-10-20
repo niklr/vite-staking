@@ -11,6 +11,7 @@ const logger = getLogger();
 export class ViteDataSource extends BaseDataSource {
   private readonly _fileUtil: FileUtil;
   private readonly _client: ViteClient;
+  private readonly _offchainMethods: Map<string, string> = new Map<string, string>();
   private _contract?: Contract;
 
   constructor(fileUtil: FileUtil = new BrowserFileUtil()) {
@@ -28,6 +29,15 @@ export class ViteDataSource extends BaseDataSource {
   }
 
   protected disposeProtected(): void {
+    this._offchainMethods.clear();
+  }
+
+  private get contract(): Contract {
+    if (this._contract?.address === undefined) {
+      throw new Error("Contract is not defined.")
+    } else {
+      return this._contract
+    }
   }
 
   async getBalanceAsync(_account: string): Promise<BigNumber> {
@@ -35,23 +45,27 @@ export class ViteDataSource extends BaseDataSource {
   }
 
   async getNetworkBlockHeightAsync(): Promise<BigNumber> {
-    throw new Error("Method not implemented.");
+    return this._client.requestAsync("ledger_getSnapshotChainHeight");
   }
 
   async getPoolAsync(_id: number, _account?: string): Promise<Pool> {
+    const poolInfo = await this._client.callOffChainMethodAsync(this.contract.address, this.getOffchainMethodAbi("getPoolInfo"), this.contract.offChain, [_id]);
     throw new Error("Method not implemented.");
   }
 
   async getPoolsAsync(_account?: string): Promise<Pool[]> {
-    throw new Error("Method not implemented.");
+    const amount = await this.getTotalPoolsAsync();
+    console.log('pool count:', amount);
+    return [];
   }
 
   async getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>> {
-    throw new Error("Method not implemented.");
+    return undefined;
   }
 
   async getTotalPoolsAsync(): Promise<number> {
-    throw new Error("Method not implemented.");
+    const result = await this._client.callOffChainMethodAsync(this.contract.address, this.getOffchainMethodAbi("getPoolCount"), this.contract.offChain, []);
+    return Number(result[0].value);
   }
 
   async depositAsync(_id: number, _amount: string): Promise<boolean> {
@@ -60,6 +74,23 @@ export class ViteDataSource extends BaseDataSource {
 
   async withdrawAsync(_id: number, _amount: string): Promise<boolean> {
     throw new Error("Method not implemented.");
+  }
+
+  private getOffchainMethodAbi(name: string): any {
+    let result: Maybe<any>
+    if (this._offchainMethods.has(name)) {
+      result = this._offchainMethods.get(name)
+    } else {
+      result = this.contract.abi.find(e => e.type === "offchain" && e.name === name)
+      if (result) {
+        this._offchainMethods.set(name, result)
+      }
+    }
+    if (result) {
+      return result
+    } else {
+      throw new Error(`The offchain method '${name}' does not exist.'`)
+    }
   }
 }
 

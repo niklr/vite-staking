@@ -1,17 +1,24 @@
-import { Box, Chip, Grid, Typography } from '@mui/material';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
+import { Box, Chip, Grid, Typography } from '@mui/material';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
-import { BootstrapTooltip } from '../../../common/components/tooltip';
 import { getEmitter } from '../../../../util/emitter.util';
 import { GlobalEvent } from '../../../../util/types';
+import { BootstrapTooltip } from '../../../common/components/tooltip';
 
 export const Footer: React.FC = () => {
   const [networkBlockHeight, setNetworkBlockHeight] = useState(new BigNumber(0))
+  const [rotated, setRotated] = useState(false)
   const emitter = getEmitter();
 
   useEffect(() => {
     const handleEvent = (height: BigNumber) => {
+      const heightString = height.toString();
+      let heightRef = height;
+      if (heightString.length > 1) {
+        heightRef = new BigNumber(heightString.substr(heightString.length - 1, heightString.length))
+      }
+      setRotated(heightRef.mod(2).eq(0));
       setNetworkBlockHeight(height);
     }
     emitter.on(GlobalEvent.NetworkBlockHeightChanged, handleEvent)
@@ -29,7 +36,7 @@ export const Footer: React.FC = () => {
               <CropSquareIcon sx={{
                 color: "gray",
                 mr: "2px",
-                transform: networkBlockHeight.mod(2).eq(0) ? "rotate(45deg)" : "rotate(0deg)",
+                transform: rotated ? "rotate(45deg)" : "rotate(0deg)",
                 fontSize: "17px"
               }} />
               {networkBlockHeight.toString()}
