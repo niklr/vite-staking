@@ -1,5 +1,9 @@
 # vite-staking
 
+<h1 align="center">
+	<img src="assets/gui.png" alt="VITE Staking Pools">
+</h1>
+
 ## Notes
 
 Sample response from getPoolInfo:
