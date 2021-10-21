@@ -9,7 +9,7 @@ export abstract class FilterUtil {
       return pools;
     }
     const moment = getMomentFactory().create();
-    const [closedPools, openPools] = partition(pools, (pool) => pool.endTimestamp > 0 && moment.get().unix() >= pool.endTimestamp);
+    const [closedPools, openPools] = partition(pools, (pool) => pool.endTimestamp >= 0 && moment.get().unix() >= pool.endTimestamp);
     let filtered: Pool[] = openPools;
     if (filter.showLive) {
       if (filter.stakedOnly) {

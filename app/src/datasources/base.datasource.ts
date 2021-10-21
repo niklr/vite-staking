@@ -1,13 +1,13 @@
 import BigNumber from "bignumber.js";
 import { CoingeckoClient, getCoingeckoClient } from "../clients/coingecko.client";
 import { getVitexClient, VitexClient } from "../clients/vitex.client";
-import { UnknownToken } from "../common/constants";
+import { TypeNames, UnknownToken } from "../common/constants";
 import { CoinUtil, getCoinUtil } from "../util/coin.util";
 import { getEmitter, IGlobalEmitter } from "../util/emitter.util";
 import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
 import { MomentUtil } from "../util/moment.util";
-import { Pool, PoolUserInfo, Token } from "../util/types";
+import { ContractPool, Pool, PoolUserInfo, Token } from "../util/types";
 import { getWalletManager, WalletAccount, WalletManager } from "../wallet";
 
 const logger = getLogger();
@@ -83,7 +83,7 @@ export abstract class BaseDataSource implements IDataSource {
   async getEndTimestampAsync(endBlock: BigNumber): Promise<number> {
     try {
       if (!endBlock || endBlock.lte(0)) {
-        return 0;
+        return -1;
       }
       const networkBlockHeight = await this.getNetworkBlockHeightAsync();
       const remainingSeconds = endBlock.minus(networkBlockHeight);
@@ -127,6 +127,27 @@ export abstract class BaseDataSource implements IDataSource {
     }
     this._tokens.set(id, unknownToken);
     return unknownToken;
+  }
+
+  protected async toPoolAsync(id: number, p: ContractPool): Promise<Pool> {
+    const stakingToken = await this.getTokenAsync(p.stakingTokenId);
+    const rewardToken = await this.getTokenAsync(p.rewardTokenId);
+    const pool: Pool = {
+      __typename: TypeNames.Pool,
+      id,
+      stakingToken,
+      rewardToken,
+      totalStaked: new BigNumber(p.totalStakingBalance),
+      totalRewards: new BigNumber(p.totalRewardBalance),
+      startBlock: new BigNumber(p.startBlock),
+      endBlock: new BigNumber(p.endBlock),
+      endTimestamp: await this.getEndTimestampAsync(new BigNumber(p.endBlock)),
+      latestRewardBlock: new BigNumber(p.latestRewardBlock),
+      rewardPerPeriod: new BigNumber(p.rewardPerPeriod),
+      rewardPerToken: new BigNumber(p.rewardPerToken),
+      paidOut: new BigNumber(p.paidOut)
+    };
+    return pool;
   }
 
   protected abstract initAsyncProtected(): Promise<void>;

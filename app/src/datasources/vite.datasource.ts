@@ -3,7 +3,7 @@ import { getViteClient, ViteClient } from "../clients/vite.client";
 import { CommonConstants } from "../common/constants";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
-import { Contract, Pool, PoolUserInfo } from "../util/types";
+import { Contract, ContractPool, Pool, PoolUserInfo } from "../util/types";
 import { BaseDataSource } from "./base.datasource";
 
 const logger = getLogger();
@@ -49,14 +49,25 @@ export class ViteDataSource extends BaseDataSource {
   }
 
   async getPoolAsync(_id: number, _account?: string): Promise<Pool> {
-    const poolInfo = await this._client.callOffChainMethodAsync(this.contract.address, this.getOffchainMethodAbi("getPoolInfo"), this.contract.offChain, [_id]);
-    throw new Error("Method not implemented.");
+    const result = await this._client.callOffChainMethodAsync(this.contract.address, this.getOffchainMethodAbi("getPoolInfo"), this.contract.offChain, [_id]);
+    const p = this.objectFromEntries(result) as ContractPool;
+    const pool = await this.toPoolAsync(_id, p);
+    pool.apr = await this.getAprAsync(pool);
+    return pool;
   }
 
   async getPoolsAsync(_account?: string): Promise<Pool[]> {
     const amount = await this.getTotalPoolsAsync();
-    console.log('pool count:', amount);
-    return [];
+    const pools = [];
+    for (let index = 0; index < amount; index++) {
+      try {
+        const pool = await this.getPoolAsync(index, _account);
+        pools.push(pool)
+      } catch (error) {
+        logger.error(error)();
+      }
+    }
+    return pools;
   }
 
   async getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>> {
@@ -91,6 +102,14 @@ export class ViteDataSource extends BaseDataSource {
     } else {
       throw new Error(`The offchain method '${name}' does not exist.'`)
     }
+  }
+
+  private objectFromEntries = (entries: any) => {
+    return Object.fromEntries(
+      entries.map((entry: any) => {
+        return [entry.name, entry.value];
+      })
+    );
   }
 }
 
