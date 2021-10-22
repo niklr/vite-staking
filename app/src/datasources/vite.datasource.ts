@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import { getViteClient, ViteClient } from "../clients/vite.client";
 import { CommonConstants } from "../common/constants";
+import { CachedFunctionCall } from "../util/cache";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
 import { Contract, ContractPool, Pool, PoolUserInfo } from "../util/types";
@@ -12,19 +13,24 @@ export class ViteDataSource extends BaseDataSource {
   private readonly _fileUtil: FileUtil;
   private readonly _client: ViteClient;
   private readonly _offchainMethods: Map<string, string> = new Map<string, string>();
+  private readonly _cachedNetworkBlockHeight: CachedFunctionCall<BigNumber>;
   private _contract?: Contract;
 
   constructor(fileUtil: FileUtil = new BrowserFileUtil()) {
     super();
     this._fileUtil = fileUtil;
     this._client = getViteClient();
+    this._cachedNetworkBlockHeight = new CachedFunctionCall(500, () => {
+      // prevent function from being called more than once every 500 milliseconds
+      return this._client.requestAsync("ledger_getSnapshotChainHeight")
+    });
     logger.info("ViteDataSource loaded")();
   }
 
   protected async initAsyncProtected(): Promise<void> {
     const contract = await this._fileUtil.readFileAsync('./assets/contracts/vite_staking_pools.json');
     this._contract = JSON.parse(contract) as Contract;
-    this._contract.address = CommonConstants.POOLS_CONTRACT_ADDRESS
+    this._contract.address = CommonConstants.POOLS_CONTRACT_ADDRESS;
     logger.info(`Contract ${this._contract?.contractName} loaded`)();
   }
 
@@ -45,7 +51,7 @@ export class ViteDataSource extends BaseDataSource {
   }
 
   async getNetworkBlockHeightAsync(): Promise<BigNumber> {
-    return this._client.requestAsync("ledger_getSnapshotChainHeight");
+    return this._cachedNetworkBlockHeight.getAsync();
   }
 
   async getPoolAsync(_id: number, _account?: string): Promise<Pool> {

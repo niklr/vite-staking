@@ -30,10 +30,7 @@ export class ViteClient {
     return this._isConnected;
   }
 
-  get connector(): IWalletConnector {
-    if (!this._connector) {
-      throw new Error("Wallet connector is not defined.");
-    }
+  get connector(): Maybe<IWalletConnector> {
     return this._connector;
   }
 

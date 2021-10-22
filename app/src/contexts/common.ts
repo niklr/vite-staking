@@ -24,7 +24,7 @@ export class CommonContext {
         break;
     }
     await this._datasource.initAsync();
-    await this._vite.initAsync(network);
+    await this.initViteClientAsync(network);
   }
 
   dispose(): void {
@@ -35,6 +35,14 @@ export class CommonContext {
 
   get datasource(): IDataSource {
     return this._datasource;
+  }
+
+  private async initViteClientAsync(network: Network): Promise<void> {
+    try {
+      await this._vite.initAsync(network);
+    } catch (error) {
+      logger.error(error)();
+    }
   }
 }
 

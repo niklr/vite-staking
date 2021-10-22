@@ -31,6 +31,13 @@ export const LoginDialog: React.FC<Props> = (props: Props) => {
     onClose();
   };
 
+  if (!viteClient.connector) {
+    return (
+      <>
+      </>
+    )
+  }
+
   return (
     <Dialog onClose={handleClose} open={open} maxWidth="xs">
       <DialogTitle>Connect Wallet</DialogTitle>
