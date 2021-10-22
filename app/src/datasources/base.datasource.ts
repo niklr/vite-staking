@@ -62,11 +62,11 @@ export abstract class BaseDataSource implements IDataSource {
   }
 
   async getAprAsync(pool: Pool): Promise<Maybe<BigNumber>> {
-    if (pool.latestRewardBlock === pool.endBlock) {
-      // pool is closed, should not display numeric APR.
-      return undefined;
-    }
     try {
+      if (pool.endTimestamp >= 0 && (this._moment.isExpired(pool.endTimestamp) || pool.latestRewardBlock === pool.endBlock)) {
+        // pool is closed, should not display numeric APR.
+        return undefined;
+      }
       const stakingTokenPrice = await this._coingeckoClient.getTokenPriceUSDAsync(pool.stakingToken.name);
       const rewardTokenPrice = await this._coingeckoClient.getTokenPriceUSDAsync(pool.rewardToken.name);
       const totalTime = pool.endBlock.minus(pool.startBlock);
@@ -132,6 +132,7 @@ export abstract class BaseDataSource implements IDataSource {
   protected async toPoolAsync(id: number, p: ContractPool): Promise<Pool> {
     const stakingToken = await this.getTokenAsync(p.stakingTokenId);
     const rewardToken = await this.getTokenAsync(p.rewardTokenId);
+    const endTimestamp = await this.getEndTimestampAsync(new BigNumber(p.endBlock));
     const pool: Pool = {
       __typename: TypeNames.Pool,
       id,
@@ -141,7 +142,7 @@ export abstract class BaseDataSource implements IDataSource {
       totalRewards: new BigNumber(p.totalRewardBalance),
       startBlock: new BigNumber(p.startBlock),
       endBlock: new BigNumber(p.endBlock),
-      endTimestamp: await this.getEndTimestampAsync(new BigNumber(p.endBlock)),
+      endTimestamp,
       latestRewardBlock: new BigNumber(p.latestRewardBlock),
       rewardPerPeriod: new BigNumber(p.rewardPerPeriod),
       rewardPerToken: new BigNumber(p.rewardPerToken),

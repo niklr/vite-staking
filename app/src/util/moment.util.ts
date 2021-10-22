@@ -52,10 +52,10 @@ export class MomentUtil {
     return this.getLocalDate(date) + ' ' + this.getLocalTime(date);
   }
 
-  public isExpired(timestamp: any): boolean {
+  public isExpired(timestamp: number): boolean {
     try {
-      if (timestamp) {
-        return moment.utc().unix() >= Number(timestamp);
+      if (timestamp >= 0) {
+        return moment.utc().unix() >= timestamp;
       }
       return false;
     } catch (error) {
