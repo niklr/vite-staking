@@ -17,9 +17,9 @@ export interface IDataSource {
   dispose(): void;
   getBalanceAsync(_account: string): Promise<BigNumber>;
   getNetworkBlockHeightAsync(): Promise<BigNumber>;
-  getPoolAsync(_id: number, _account?: string): Promise<Pool>;
-  getPoolsAsync(_account?: string): Promise<Pool[]>;
-  getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>>;
+  getPoolAsync(_id: number, _account?: Maybe<string>): Promise<Pool>;
+  getPoolsAsync(_account?: Maybe<string>): Promise<Pool[]>;
+  getPoolUserInfoAsync(_poolId: number, _account?: Maybe<string>): Promise<Maybe<PoolUserInfo>>;
   getTokenAsync(_id: string): Promise<Token>;
   getTotalPoolsAsync(): Promise<number>;
   depositAsync(_id: number, _tokenId: string, _amount: string): Promise<boolean>;
@@ -171,11 +171,11 @@ export abstract class BaseDataSource implements IDataSource {
 
   abstract getNetworkBlockHeightAsync(): Promise<BigNumber>;
 
-  abstract getPoolAsync(_id: number, _account?: string): Promise<Pool>;
+  abstract getPoolAsync(_id: number, _account?: Maybe<string>): Promise<Pool>;
 
-  abstract getPoolsAsync(_account?: string): Promise<Pool[]>;
+  abstract getPoolsAsync(_account?: Maybe<string>): Promise<Pool[]>;
 
-  abstract getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>>;
+  abstract getPoolUserInfoAsync(_poolId: number, _account?: Maybe<string>): Promise<Maybe<PoolUserInfo>>;
 
   abstract getTotalPoolsAsync(): Promise<number>;
 

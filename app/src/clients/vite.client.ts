@@ -2,7 +2,7 @@ import { abi as abiutils, accountBlock, utils, ViteAPI } from "@vite/vitejs";
 import { getEmitter, IGlobalEmitter } from "../util/emitter.util";
 import { getLogger } from "../util/logger";
 import { Task } from "../util/task";
-import { Network } from "../util/types";
+import { Network, VmLog } from "../util/types";
 import { getWalletManager, IWalletConnector, SessionWalletAccount, WalletAccount, WalletConnectorFactory, WalletManager, WebWalletAccount } from "../wallet";
 const { WS_RPC } = require('@vite/vitejs-ws');
 
@@ -139,6 +139,47 @@ export class ViteClient {
       return resultList;
     }
     return "";
+  }
+
+  decodeVmLog(vmLog: any, abi: any): Maybe<VmLog> {
+    let topics = vmLog.topics;
+    for (let j = 0; j < abi.length; j++) {
+      let abiItem = abi[j];
+      if (abiutils.encodeLogSignature(abiItem) === topics[0]) {
+        if (vmLog.data) {
+          let log: VmLog = {
+            topic: topics[0],
+            args: abiutils.decodeLog(
+              abiItem.inputs,
+              utils._Buffer.from(vmLog.data, "base64").toString("hex"),
+              topics.slice(1)
+            ),
+            event: abiItem.name,
+          };
+          return log;
+        }
+      }
+    }
+    return undefined;
+  }
+
+  async createAddressListenerAsync(address: string): Promise<any> {
+    const payload = {
+      addressHeightRange: {
+        placeholder: {
+          fromHeight: "0",
+          toHeight: "0",
+        },
+      },
+    };
+    let tempPayload = JSON.stringify(payload);
+    tempPayload = tempPayload.replace("placeholder", address);
+    const result = await this._client?.subscribe("createVmlogSubscription", JSON.parse(tempPayload));
+    return result;
+  }
+
+  removeListener(event: any): void {
+    this._client?.unsubscribe(event);
   }
 
   async waitForAccountBlockAsync(address: string, height: string): Promise<any> {

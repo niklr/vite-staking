@@ -15,6 +15,7 @@ export class CommonContext {
   }
 
   async initAsync(network: Network): Promise<void> {
+    await this.initViteClientAsync(network);
     switch (network.id) {
       case 3:
         this._datasource = getMockDataSource();
@@ -24,7 +25,6 @@ export class CommonContext {
         break;
     }
     await this._datasource.initAsync();
-    await this.initViteClientAsync(network);
   }
 
   dispose(): void {

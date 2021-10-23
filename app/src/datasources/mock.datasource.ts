@@ -86,7 +86,7 @@ export class MockDataSource extends BaseDataSource {
     return this._networkBlockHeight;
   }
 
-  async getPoolAsync(_id: number, _account?: string): Promise<Pool> {
+  async getPoolAsync(_id: number, _account?: Maybe<string>): Promise<Pool> {
     await CommonUtil.timeout(CommonUtil.random(100, 500));
     const pool = this._pools[_id];
     if (!_account) {
@@ -98,7 +98,7 @@ export class MockDataSource extends BaseDataSource {
     }
   }
 
-  async getPoolsAsync(_account?: string): Promise<Pool[]> {
+  async getPoolsAsync(_account?: Maybe<string>): Promise<Pool[]> {
     await CommonUtil.timeout(1000);
     if (!_account) {
       return this._pools;
@@ -110,7 +110,7 @@ export class MockDataSource extends BaseDataSource {
     return pools;
   }
 
-  async getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>> {
+  async getPoolUserInfoAsync(_poolId: number, _account?: Maybe<string>): Promise<Maybe<PoolUserInfo>> {
     if (CommonUtil.isNullOrWhitespace(_account)) {
       return undefined;
     }

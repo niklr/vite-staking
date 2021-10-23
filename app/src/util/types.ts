@@ -111,3 +111,15 @@ export enum GlobalEvent {
   PoolDeposit = 'PoolDeposit',
   PoolWithdraw = 'PoolWithdraw'
 }
+
+export type VmLog = {
+  event: string
+  topic: string
+  args: any
+}
+
+export enum VmLogEvent {
+  PoolCreated = 'PoolCreated',
+  Deposit = 'Deposit',
+  Withdraw = 'Withdraw'
+}

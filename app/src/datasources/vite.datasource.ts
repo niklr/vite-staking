@@ -5,7 +5,7 @@ import { CachedFunctionCall } from "../util/cache";
 import { CommonUtil } from "../util/common.util";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
-import { Contract, ContractPool, ContractPoolUserInfo, Pool, PoolUserInfo } from "../util/types";
+import { Contract, ContractPool, ContractPoolUserInfo, Pool, PoolUserInfo, VmLog, VmLogEvent } from "../util/types";
 import { BaseDataSource } from "./base.datasource";
 
 const logger = getLogger();
@@ -16,6 +16,7 @@ export class ViteDataSource extends BaseDataSource {
   private readonly _offchainMethods: Map<string, string> = new Map<string, string>();
   private readonly _cachedNetworkBlockHeight: CachedFunctionCall<number>;
   private _contract?: Contract;
+  private _listener: any;
 
   constructor(fileUtil: FileUtil = new BrowserFileUtil()) {
     super();
@@ -33,17 +34,39 @@ export class ViteDataSource extends BaseDataSource {
     this._contract = JSON.parse(contract) as Contract;
     this._contract.address = CommonConstants.POOLS_CONTRACT_ADDRESS;
     logger.info(`Contract ${this._contract?.contractName} loaded`)();
+    this._listener = await this._client.createAddressListenerAsync(this._contract.address);
+    this._listener.on((results: any[]) => {
+      if (!this._contract?.abi) {
+        logger.info('Could not decode vmlog because contract abi is not defined.')();
+      } else {
+        for (let index = 0; index < results.length; index++) {
+          const result = results[index];
+          const vmLog = this._client.decodeVmLog(result.vmlog, this._contract.abi);
+          logger.info(vmLog ?? result)();
+          if (vmLog) {
+            this.handleVmLogAsync(vmLog);
+          }
+        }
+      }
+    });
   }
 
   protected disposeProtected(): void {
+    this.removeAddressListener();
     this._offchainMethods.clear();
+  }
+
+  private removeAddressListener(): void {
+    if (this._listener) {
+      this._client.removeListener(this._listener);
+    }
   }
 
   private get contract(): Contract {
     if (this._contract?.address === undefined) {
-      throw new Error("Contract is not defined.")
+      throw new Error("Contract is not defined.");
     } else {
-      return this._contract
+      return this._contract;
     }
   }
 
@@ -61,7 +84,7 @@ export class ViteDataSource extends BaseDataSource {
     }
   }
 
-  async getPoolAsync(_id: number, _account?: string): Promise<Pool> {
+  async getPoolAsync(_id: number, _account?: Maybe<string>): Promise<Pool> {
     const result = await this._client.callOffChainMethodAsync(this.contract.address, this.getOffchainMethodAbi("getPoolInfo"), this.contract.offChain, [_id]);
     const p = this.objectFromEntries(result) as ContractPool;
     const pool = await this.toPoolAsync(_id, p);
@@ -70,7 +93,7 @@ export class ViteDataSource extends BaseDataSource {
     return pool;
   }
 
-  async getPoolsAsync(_account?: string): Promise<Pool[]> {
+  async getPoolsAsync(_account?: Maybe<string>): Promise<Pool[]> {
     const amount = await this.getTotalPoolsAsync();
     const pools = [];
     for (let index = 0; index < amount; index++) {
@@ -84,7 +107,7 @@ export class ViteDataSource extends BaseDataSource {
     return pools;
   }
 
-  async getPoolUserInfoAsync(_poolId: number, _account?: string): Promise<Maybe<PoolUserInfo>> {
+  async getPoolUserInfoAsync(_poolId: number, _account?: Maybe<string>): Promise<Maybe<PoolUserInfo>> {
     if (!_account || CommonUtil.isNullOrWhitespace(_account)) {
       return undefined;
     }
@@ -107,7 +130,10 @@ export class ViteDataSource extends BaseDataSource {
   }
 
   async withdrawAsync(_id: number, _amount: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    const account = this.getAccount();
+    const result = await this._client.callContractAsync(account, "withdraw", this.contract.abi, [_id, _amount], undefined, "0", this.contract.address);
+    await this.handleResponseAsync(account.address, result.height);
+    return true;
   }
 
   private getOffchainMethodAbi(name: string): any {
@@ -136,6 +162,20 @@ export class ViteDataSource extends BaseDataSource {
       }
     })
   })
+
+  private async handleVmLogAsync(vmlog: VmLog): Promise<void> {
+    try {
+      if (vmlog.event === VmLogEvent.Deposit && vmlog.args.addr && vmlog.args.pid && vmlog.args.amount) {
+        this._emitter.emitPoolDeposit(Number(vmlog.args.pid), new BigNumber(vmlog.args.amount), vmlog.args.addr);
+      } else if (vmlog.event === VmLogEvent.Withdraw && vmlog.args.addr && vmlog.args.pid && vmlog.args.amount) {
+        this._emitter.emitPoolWithdraw(Number(vmlog.args.pid), new BigNumber(vmlog.args.amount), vmlog.args.addr);
+      } else {
+        logger.info('Unknown vmlog event.', vmlog)();
+      }
+    } catch (error) {
+      logger.error(error)();
+    }
+  }
 
   private objectFromEntries = (entries: any) => {
     return Object.fromEntries(
