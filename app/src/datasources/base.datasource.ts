@@ -155,6 +155,7 @@ export abstract class BaseDataSource implements IDataSource {
   protected async toPoolUserInfoAsync(u: ContractPoolUserInfo): Promise<PoolUserInfo> {
     return {
       __typename: TypeNames.PoolUserInfo,
+      id: `${u.address}_${u.poolId}`,
       poolId: u.poolId,
       account: u.address,
       stakingBalance: new BigNumber(u.stakingBalance),

@@ -30,6 +30,7 @@ export const POOL_FIELDS = gql`
 
 export const POOL_USER_INFO_FIELDS = gql`
   fragment PoolUserInfoFields on PoolUserInfo {
+    id
     poolId
     account
     stakingBalance

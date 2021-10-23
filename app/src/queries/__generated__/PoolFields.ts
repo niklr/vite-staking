@@ -31,6 +31,7 @@ export interface PoolFields_rewardToken {
 
 export interface PoolFields_userInfo {
   __typename: "PoolUserInfo";
+  id: string;
   poolId: number;
   account: string;
   stakingBalance: any;

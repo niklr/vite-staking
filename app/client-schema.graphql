@@ -19,6 +19,7 @@ type Pool {
 }
 
 type PoolUserInfo {
+  id: ID!
   poolId: Int!
   account: String!
   stakingBalance: BigNumber!

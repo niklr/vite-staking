@@ -9,6 +9,7 @@
 
 export interface PoolUserInfoFields {
   __typename: "PoolUserInfo";
+  id: string;
   poolId: number;
   account: string;
   stakingBalance: any;
