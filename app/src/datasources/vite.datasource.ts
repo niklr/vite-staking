@@ -100,7 +100,10 @@ export class ViteDataSource extends BaseDataSource {
   }
 
   async depositAsync(_id: number, _tokenId: string, _amount: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    const account = this.getAccount();
+    const result = await this._client.callContractAsync(account, "deposit", this.contract.abi, [_id], _tokenId, _amount, this.contract.address);
+    await this.handleResponseAsync(account.address, result.height);
+    return true;
   }
 
   async withdrawAsync(_id: number, _amount: string): Promise<boolean> {
@@ -123,6 +126,16 @@ export class ViteDataSource extends BaseDataSource {
       throw new Error(`The offchain method '${name}' does not exist.'`)
     }
   }
+
+  private handleResponseAsync = async (address: string, height: string) => new Promise<void>((resolve, reject) => {
+    this._client.waitForAccountBlockAsync(address, height).then((result: any) => {
+      if (result?.status === 0) {
+        resolve()
+      } else {
+        reject(result?.statusTxt ?? "Something went wrong.")
+      }
+    })
+  })
 
   private objectFromEntries = (entries: any) => {
     return Object.fromEntries(

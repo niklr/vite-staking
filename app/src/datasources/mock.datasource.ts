@@ -150,7 +150,7 @@ export class MockDataSource extends BaseDataSource {
     const pool = this._pools[_id];
     await this._updatePoolAsync(pool);
 
-    const amount = new BigNumber(_amount).times(new BigNumber(10).pow(pool.stakingToken.decimals));
+    const amount = new BigNumber(_amount);
     const account = this.getAccount().address;
     const userInfo = await this.getPoolUserInfoAsync(_id, account);
     if (userInfo) {
@@ -173,7 +173,7 @@ export class MockDataSource extends BaseDataSource {
     const pool = this._pools[_id];
     await this._updatePoolAsync(pool);
 
-    const amount = new BigNumber(_amount).times(new BigNumber(10).pow(pool.stakingToken.decimals));
+    const amount = new BigNumber(_amount);
     const account = this.getAccount().address;
     const userInfo = await this.getPoolUserInfoAsync(_id, account);
     if (!userInfo) {

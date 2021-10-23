@@ -50,7 +50,8 @@ export const PoolWithdrawDialog: React.FC<Props> = (props: Props) => {
 
   const handleConfirmAsync = async () => {
     try {
-      await poolService.withdrawAsync(props.pool.id, amount);
+      const _amount = new BigNumber(amount).times(new BigNumber(10).pow(props.pool.stakingToken.decimals));
+      await poolService.withdrawAsync(props.pool.id, _amount.toString());
       handleClose();
     } catch (error) {
       SnackbarUtil.enqueueError(error);
