@@ -81,6 +81,7 @@ export const ConnectedWeb3: React.FC<Props> = (props: Props) => {
       if (network) {
         logger.info('Init ConnectedWeb3')()
         try {
+          setConnection(null)
           await commonContext.initAsync(network)
           setConnection(value)
         } catch (error) {

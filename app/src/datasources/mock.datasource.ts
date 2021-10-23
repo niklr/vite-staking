@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js";
-import { TypeNames } from "../common/constants";
 import { CommonUtil } from "../util/common.util";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
@@ -61,13 +60,8 @@ export class MockDataSource extends BaseDataSource {
     this._users = [];
     for (let index = 0; index < users.length; index++) {
       const u: ContractPoolUserInfo = users[index];
-      this._users.push({
-        __typename: TypeNames.PoolUserInfo,
-        poolId: u.poolId,
-        account: u.address,
-        stakingBalance: new BigNumber(u.stakingBalance),
-        rewardDebt: new BigNumber(u.rewardDebt)
-      })
+      const info = await this.toPoolUserInfoAsync(u);
+      this._users.push(info);
     }
   }
 

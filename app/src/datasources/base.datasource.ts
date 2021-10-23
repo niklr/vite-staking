@@ -7,7 +7,7 @@ import { getEmitter, IGlobalEmitter } from "../util/emitter.util";
 import { Ensure } from "../util/ensure";
 import { getLogger } from "../util/logger";
 import { MomentUtil } from "../util/moment.util";
-import { ContractPool, Pool, PoolUserInfo, Token } from "../util/types";
+import { ContractPool, ContractPoolUserInfo, Pool, PoolUserInfo, Token } from "../util/types";
 import { getWalletManager, WalletAccount, WalletManager } from "../wallet";
 
 const logger = getLogger();
@@ -52,6 +52,7 @@ export abstract class BaseDataSource implements IDataSource {
 
   dispose(): void {
     logger.info("Disposing BaseDataSource")();
+    this._tokens.clear();
     this.disposeProtected();
   }
 
@@ -149,6 +150,16 @@ export abstract class BaseDataSource implements IDataSource {
       paidOut: new BigNumber(p.paidOut)
     };
     return pool;
+  }
+
+  protected async toPoolUserInfoAsync(u: ContractPoolUserInfo): Promise<PoolUserInfo> {
+    return {
+      __typename: TypeNames.PoolUserInfo,
+      poolId: u.poolId,
+      account: u.address,
+      stakingBalance: new BigNumber(u.stakingBalance),
+      rewardDebt: new BigNumber(u.rewardDebt)
+    }
   }
 
   protected abstract initAsyncProtected(): Promise<void>;

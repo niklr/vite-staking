@@ -5,7 +5,7 @@ import { CachedFunctionCall } from "../util/cache";
 import { CommonUtil } from "../util/common.util";
 import { BrowserFileUtil, FileUtil } from "../util/file.util";
 import { getLogger } from "../util/logger";
-import { Contract, ContractPool, Pool, PoolUserInfo } from "../util/types";
+import { Contract, ContractPool, ContractPoolUserInfo, Pool, PoolUserInfo } from "../util/types";
 import { BaseDataSource } from "./base.datasource";
 
 const logger = getLogger();
@@ -66,6 +66,7 @@ export class ViteDataSource extends BaseDataSource {
     const p = this.objectFromEntries(result) as ContractPool;
     const pool = await this.toPoolAsync(_id, p);
     pool.apr = await this.getAprAsync(pool);
+    pool.userInfo = await this.getPoolUserInfoAsync(_id, _account);
     return pool;
   }
 
@@ -87,7 +88,10 @@ export class ViteDataSource extends BaseDataSource {
     if (!_account || CommonUtil.isNullOrWhitespace(_account)) {
       return undefined;
     }
-    return undefined;
+    const result = await this._client.callOffChainMethodAsync(this.contract.address, this.getOffchainMethodAbi("getUserInfo"), this.contract.offChain, [_poolId, _account]);
+    const u = this.objectFromEntries(result) as ContractPoolUserInfo;
+    const info = await this.toPoolUserInfoAsync(u);
+    return info;
   }
 
   async getTotalPoolsAsync(): Promise<number> {
