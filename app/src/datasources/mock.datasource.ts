@@ -145,7 +145,7 @@ export class MockDataSource extends BaseDataSource {
     pool.latestRewardBlock = latestBlock;
   }
 
-  async depositAsync(_id: number, _amount: string): Promise<boolean> {
+  async depositAsync(_id: number, _tokenId: string, _amount: string): Promise<boolean> {
     await CommonUtil.timeout(1000);
     const pool = this._pools[_id];
     await this._updatePoolAsync(pool);

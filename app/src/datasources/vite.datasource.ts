@@ -99,7 +99,7 @@ export class ViteDataSource extends BaseDataSource {
     return Number(result[0].value);
   }
 
-  async depositAsync(_id: number, _amount: string): Promise<boolean> {
+  async depositAsync(_id: number, _tokenId: string, _amount: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
 

@@ -48,11 +48,12 @@ export class PoolService {
     }
   }
 
-  async depositAsync(id: number, amount: string): Promise<boolean> {
+  async depositAsync(id: number, tokenId: string, amount: string): Promise<boolean> {
     const result = await this._apollo.mutate<Deposit, DepositVariables>({
       mutation: DEPOSIT_MUTATION,
       variables: {
         id: id.toString(),
+        tokenId,
         amount
       }
     });

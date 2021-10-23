@@ -45,6 +45,6 @@ extend type Query {
 }
 
 extend type Mutation {
-  deposit(id: ID!, amount: String): Boolean!
+  deposit(id: ID!, tokenId: String, amount: String): Boolean!
   withdraw(id: ID!, amount: String): Boolean!
 }

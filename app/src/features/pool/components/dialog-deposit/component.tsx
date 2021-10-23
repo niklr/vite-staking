@@ -42,7 +42,7 @@ export const PoolDepositDialog: React.FC<Props> = (props: Props) => {
 
   const handleConfirmAsync = async () => {
     try {
-      await poolService.depositAsync(props.pool.id, amount);
+      await poolService.depositAsync(props.pool.id, props.pool.stakingToken.id, amount);
       handleClose();
     } catch (error) {
       SnackbarUtil.enqueueError(error);

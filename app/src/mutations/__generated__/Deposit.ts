@@ -13,5 +13,6 @@ export interface Deposit {
 
 export interface DepositVariables {
   id: string;
+  tokenId: string;
   amount: string;
 }
