@@ -79,8 +79,8 @@ export class MockDataSource extends BaseDataSource {
     }
   }
 
-  getBalanceAsync(_account: string): Promise<BigNumber> {
-    throw new Error("Method not implemented.");
+  async getAccountBalanceAsync(_account: string): Promise<BigNumber> {
+    return new BigNumber(0);
   }
 
   async getNetworkBlockHeightAsync(): Promise<BigNumber> {

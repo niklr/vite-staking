@@ -5,6 +5,7 @@ import { getCommonContext } from '../contexts/common';
 import { IDataSource } from '../datasources';
 import { PoolMutations } from '../mutations';
 import { NetworkQueries, PoolQueries, TokenQueries } from '../queries';
+import { AccountQueries } from '../queries/account';
 
 export type ApolloContext = {
   cache: InMemoryCache,
@@ -42,6 +43,7 @@ const bigNumberScalar = new GraphQLScalarType({
 const resolvers: any = {
   BigNumber: bigNumberScalar,
   Query: {
+    ...AccountQueries,
     ...NetworkQueries,
     ...PoolQueries,
     ...TokenQueries

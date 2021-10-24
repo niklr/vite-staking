@@ -15,7 +15,7 @@ const logger = getLogger();
 export interface IDataSource {
   initAsync(): Promise<void>;
   dispose(): void;
-  getBalanceAsync(_account: string): Promise<BigNumber>;
+  getAccountBalanceAsync(_account: string): Promise<BigNumber>;
   getNetworkBlockHeightAsync(): Promise<BigNumber>;
   getPoolAsync(_id: number, _account?: Maybe<string>): Promise<Pool>;
   getPoolsAsync(_account?: Maybe<string>): Promise<Pool[]>;
@@ -167,7 +167,7 @@ export abstract class BaseDataSource implements IDataSource {
 
   protected abstract disposeProtected(): void;
 
-  abstract getBalanceAsync(_account: string): Promise<BigNumber>;
+  abstract getAccountBalanceAsync(_account: string): Promise<BigNumber>;
 
   abstract getNetworkBlockHeightAsync(): Promise<BigNumber>;
 

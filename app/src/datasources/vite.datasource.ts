@@ -70,8 +70,15 @@ export class ViteDataSource extends BaseDataSource {
     }
   }
 
-  async getBalanceAsync(_account: string): Promise<BigNumber> {
-    throw new Error("Method not implemented.");
+  async getAccountBalanceAsync(_account: string): Promise<BigNumber> {
+    if (CommonUtil.isNullOrWhitespace(_account)) {
+      return new BigNumber(0);
+    }
+    const result = await this._client.requestAsync("ledger_getAccountInfoByAddress", _account);
+    if (!result?.balanceInfoMap) {
+      return new BigNumber(0);
+    }
+    return new BigNumber(result.balanceInfoMap[CommonConstants.VITE_TOKEN_ID]);
   }
 
   async getNetworkBlockHeightAsync(): Promise<BigNumber> {

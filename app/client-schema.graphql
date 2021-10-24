@@ -37,6 +37,7 @@ type Token {
 }
 
 extend type Query {
+  accountBalance(account: String): BigNumber!
   networkBlockHeight: BigNumber!
   pool(id: ID!, account: String): Pool!
   pools(account: String): [Pool!]!
