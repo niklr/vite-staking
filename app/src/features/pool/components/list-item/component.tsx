@@ -1,7 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
-import BigNumber from "bignumber.js";
 import React, { useEffect, useState } from "react";
 import { getPoolService } from '../../../../services/pool.service';
 import { getEmitter } from '../../../../util/emitter.util';
@@ -12,6 +11,7 @@ import { ViteUtil } from "../../../../util/vite.util";
 import { ClickOnceButton } from '../../../common/components/click-once-button';
 import { PoolCountdown } from "../countdown";
 import { PoolDialog } from "../dialog";
+import { Rewards } from '../rewards';
 import { Tokens } from "../tokens";
 
 const logger = getLogger()
@@ -33,7 +33,6 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
     type: PoolDialogType.DEPOSIT,
     open: false
   });
-  const [rewardTokens, setRewardTokens] = useState<BigNumber>(new BigNumber(0));
   const [canClaim, setCanClaim] = useState<boolean>(false);
   const [canWithdraw, setCanWithdraw] = useState<boolean>(false);
   const poolService = getPoolService();
@@ -42,23 +41,11 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     if (props.pool) {
       logger.info(`Pool loaded: ${props.pool?.id}`)();
-      const newRewardTokens = ViteUtil.calculateRewardTokens(props.pool);
-      setRewardTokens(newRewardTokens);
-      setCanClaim(!!props.pool && !!props.account && newRewardTokens.gt(0));
       setCanWithdraw(!!props.pool && !!props.account && (props.pool.userInfo?.stakingBalance.gt(0) ?? false))
     } else {
-      setRewardTokens(new BigNumber(0));
-      setCanClaim(false);
       setCanWithdraw(false);
     }
   }, [props.pool, props.account]);
-
-  const showRewardTokens = (decimals: number): string => {
-    if (!props.pool) {
-      return "0";
-    }
-    return ViteUtil.formatBigNumber(rewardTokens, props.pool.rewardToken.decimals, decimals);
-  }
 
   const showApr = (): Maybe<string> => {
     if (!props.pool || !props.pool.apr) {
@@ -133,7 +120,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                         {props.pool?.rewardToken.originalSymbol} earned
                       </Typography>
                       <Typography variant="subtitle1">
-                        {showRewardTokens(4)}
+                        <Rewards pool={props.pool} decimals={4}></Rewards>
                       </Typography>
                     </>
                   )}
@@ -206,7 +193,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                         <Skeleton animation="wave" height={30} width="100%" />
                       ) : (
                         <Typography sx={{ width: "100%" }} noWrap>
-                          {showRewardTokens(18)}
+                          <Rewards pool={props.pool} decimals={18} account={props.account} setCanClaim={setCanClaim}></Rewards>
                         </Typography>
                       )}
                       <Box sx={{ ml: 2 }} >

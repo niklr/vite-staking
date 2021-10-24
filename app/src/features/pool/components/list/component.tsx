@@ -54,13 +54,12 @@ export const PoolList: React.FC<Props> = (props: Props) => {
       if (allPools && pool) {
         const index = allPools.findIndex(e => e.id === pool.id)
         if (index >= 0) {
-          // Ignore outdated pool
-          if (pool.fetchTimestamp >= allPools[index].fetchTimestamp) {
-            // Replace existing
-            const updatedPools = [...allPools]
-            updatedPools[index] = pool
-            setAllPools(updatedPools)
+          // Replace existing
+          const updatedPools = [...allPools]
+          updatedPools[index] = {
+            ...pool
           }
+          setAllPools(updatedPools)
         } else {
           // Prepend to existing pools
           setAllPools([pool, ...allPools])
@@ -71,17 +70,12 @@ export const PoolList: React.FC<Props> = (props: Props) => {
       const pool = await commonContext.datasource.getPoolAsync(id, props.account)
       replacePool(pool)
     }
-    const handlePoolUpdate = async (pool: Pool) => {
-      replacePool(pool)
-    }
     emitter.on(GlobalEvent.PoolDeposit, handlePoolEvent)
     emitter.on(GlobalEvent.PoolWithdraw, handlePoolEvent)
-    emitter.on(GlobalEvent.PoolUpdate, handlePoolUpdate)
     return () => {
       logger.info('emitter.off', GlobalEvent.PoolDeposit)()
       emitter.off(GlobalEvent.PoolDeposit, handlePoolEvent)
       emitter.off(GlobalEvent.PoolWithdraw, handlePoolEvent)
-      emitter.off(GlobalEvent.PoolUpdate, handlePoolUpdate)
     };
   }, [emitter, allPools, commonContext, props.account])
 

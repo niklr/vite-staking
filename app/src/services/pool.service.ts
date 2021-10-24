@@ -1,5 +1,7 @@
 import { ApolloClient, FetchPolicy, NormalizedCacheObject } from "@apollo/client";
+import BigNumber from "bignumber.js";
 import { getApolloClient } from "../clients/apollo.client";
+import { CommonConstants } from "../common/constants";
 import { getMomentFactory } from "../factories";
 import { DEPOSIT_MUTATION, WITHDRAW_MUTATION } from "../mutations";
 import { Deposit, DepositVariables } from "../mutations/__generated__/Deposit";
@@ -74,6 +76,34 @@ export class PoolService {
       }
     });
     return Boolean(result.data?.withdraw ?? false);
+  }
+
+  updateRewardPerToken(pool: Maybe<Pool>, blockNumber: BigNumber): boolean {
+    if (!pool?.userInfo) {
+      return false;
+    }
+
+    const latestBlock = blockNumber.lt(pool.endBlock) ? blockNumber : pool.endBlock;
+
+    // rewardPerToken is global, so we only want to update once per timestamp/block.
+    // latestRewardBlock initially set to startBlock, so no updates before that.
+    if (latestBlock.lte(pool.latestRewardBlock)) {
+      return false;
+    }
+
+    // if staking balance is 0 over a period, the rewardPerToken should not increase.
+    if (pool.totalStaked.eq(new BigNumber(0))) {
+      pool.latestRewardBlock = latestBlock;
+      return true;
+    }
+
+    // increase rewardPerToken by reward amount over period since previous reward block.
+    const period = latestBlock.minus(pool.latestRewardBlock);
+    const latestReward = pool.rewardPerPeriod.times(period).times(CommonConstants.REWARD_FACTOR).div(pool.totalStaked);
+    pool.rewardPerToken = pool.rewardPerToken.plus(latestReward);
+
+    pool.latestRewardBlock = latestBlock;
+    return true;
   }
 }
 
