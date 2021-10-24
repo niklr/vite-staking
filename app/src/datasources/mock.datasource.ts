@@ -153,7 +153,7 @@ export class MockDataSource extends BaseDataSource {
 
     const amount = new BigNumber(_amount);
     const account = this.getAccount().address;
-    const userInfo = await this.getPoolUserInfoAsync(_id, account);
+    let userInfo = await this.getPoolUserInfoAsync(_id, account);
     if (userInfo) {
       // dispense rewards
       if (userInfo.stakingBalance.gt(0)) {
@@ -163,6 +163,14 @@ export class MockDataSource extends BaseDataSource {
       // update balances & recompute rewardDebt
       userInfo.stakingBalance = userInfo.stakingBalance.plus(amount);
       userInfo.rewardDebt = userInfo.stakingBalance.times(pool.rewardPerToken).div(CommonConstants.REWARD_FACTOR);
+    } else {
+      userInfo = await this.toPoolUserInfoAsync({
+        poolId: _id,
+        address: account,
+        stakingBalance: amount.toString(),
+        rewardDebt: "0"
+      });
+      this._users.push(userInfo);
     }
     pool.totalStaked = pool.totalStaked.plus(amount);
     this._emitter.emitPoolDeposit(_id, new BigNumber(_amount), account);
