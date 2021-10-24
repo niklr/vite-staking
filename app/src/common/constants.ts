@@ -4,7 +4,8 @@ export const CommonConstants = {
   APP_NAME: 'VITE Staking Pools',
   WEB_WALLET_STORAGE_SPACE: 'VSP_WEB_WALLET',
   SESSION_WALLET_STORAGE_SPACE: 'VSP_SESSION_WALLET',
-  POOLS_CONTRACT_ADDRESS: 'vite_52e5f8af07f0dc324152bacb59fcce1bcfbd6c3877ebb00e56'
+  POOLS_CONTRACT_ADDRESS: 'vite_52e5f8af07f0dc324152bacb59fcce1bcfbd6c3877ebb00e56',
+  REWARD_FACTOR: 1e36 // 10^36 = new BigNumber(10).pow(36)
 }
 
 export const Networks: Network[] = [

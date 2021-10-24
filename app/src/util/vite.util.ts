@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { CommonConstants } from "../common/constants";
 import { Pool } from "./types";
 
 export abstract class ViteUtil {
@@ -6,11 +7,7 @@ export abstract class ViteUtil {
     if (!pool?.userInfo) {
       return new BigNumber(0);
     }
-    const stakingBalance = pool.userInfo.stakingBalance.div(new BigNumber(10).pow(pool.stakingToken.decimals));
-    const rewardPerToken = pool.rewardPerToken.div(new BigNumber(10).pow(pool.rewardToken.decimals));
-    const rewardDebt = pool.userInfo.rewardDebt.div(new BigNumber(10).pow(pool.rewardToken.decimals));
-    // console.log('pool.id', pool.id, 'stakingBalance', stakingBalance.toString(), 'rewardPerToken', rewardPerToken.toString(), 'rewardDebt', rewardDebt.toString());
-    return (stakingBalance.times(rewardPerToken).minus(rewardDebt)).times(new BigNumber(10).pow(pool.rewardToken.decimals));
+    return (pool.userInfo.stakingBalance.times(pool.rewardPerToken).div(CommonConstants.REWARD_FACTOR).minus(pool.userInfo.rewardDebt));
   }
 
   static formatBigNumber(bn: BigNumber, tokenDecimals: number, decimals: number): string {
