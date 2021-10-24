@@ -48,6 +48,7 @@ export type Pool = {
   rewardPerToken: BigNumber
   paidOut: BigNumber
   userInfo?: Maybe<PoolUserInfo>
+  fetchTimestamp: number
 }
 
 export type ContractPool = {
@@ -109,7 +110,8 @@ export enum GlobalEvent {
   NetworkBlockHeightChanged = 'NetworkBlockHeightChanged',
   PoolFilterValuesChanged = 'PoolFilterValuesChanged',
   PoolDeposit = 'PoolDeposit',
-  PoolWithdraw = 'PoolWithdraw'
+  PoolWithdraw = 'PoolWithdraw',
+  PoolUpdate = 'PoolUpdate'
 }
 
 export type VmLog = {

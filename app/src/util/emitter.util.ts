@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import EventEmitter from 'events';
-import { GlobalEvent, PoolFilterValues } from './types';
+import { GlobalEvent, Pool, PoolFilterValues } from './types';
 
 export interface IGlobalEmitter {
   emitConfirmTransactionDialog(open: boolean): void
@@ -9,6 +9,7 @@ export interface IGlobalEmitter {
   emitPoolFilterValuesChanged(oldValues: PoolFilterValues, newValues: PoolFilterValues): void
   emitPoolDeposit(id: number, amount: BigNumber, account: string): void
   emitPoolWithdraw(id: number, amount: BigNumber, account: string): void
+  emitPoolUpdate(pool: Pool): void
   on(event: string | symbol, listener: (...args: any[]) => void): this
   off(event: string | symbol, listener: (...args: any[]) => void): this
 }
@@ -31,6 +32,9 @@ export class GlobalEmitter extends EventEmitter implements IGlobalEmitter {
   }
   emitPoolWithdraw(id: number, amount: BigNumber, account: string): void {
     this.emit(GlobalEvent.PoolWithdraw, id, amount, account)
+  }
+  emitPoolUpdate(pool: Pool): void {
+    this.emit(GlobalEvent.PoolUpdate, pool)
   }
 }
 

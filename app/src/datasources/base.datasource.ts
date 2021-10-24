@@ -147,7 +147,8 @@ export abstract class BaseDataSource implements IDataSource {
       latestRewardBlock: new BigNumber(p.latestRewardBlock),
       rewardPerPeriod: new BigNumber(p.rewardPerPeriod),
       rewardPerToken: new BigNumber(p.rewardPerToken),
-      paidOut: new BigNumber(p.paidOut)
+      paidOut: new BigNumber(p.paidOut),
+      fetchTimestamp: this._moment.get().unix()
     };
     return pool;
   }
