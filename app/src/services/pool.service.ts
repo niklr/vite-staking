@@ -21,22 +21,22 @@ export class PoolService {
     this._walletManager = getWalletManager();
   }
 
-  async getAsync(id: number, fetchPolicy: FetchPolicy = "network-only"): Promise<Maybe<Pool>> {
+  async getAsync(_id: number, _fetchPolicy: FetchPolicy = "network-only"): Promise<Maybe<Pool>> {
     try {
       const poolQuery = await this._apollo.query<GetPool, GetPoolVariables>({
         query: GET_POOL_QUERY,
         variables: {
-          id: id.toString()
+          id: _id.toString()
         },
-        fetchPolicy
+        fetchPolicy: _fetchPolicy
       });
       const userInfoQuery = await this._apollo.query<GetPoolUserInfo, GetPoolUserInfoVariables>({
         query: GET_POOL_USER_INFO_QUERY,
         variables: {
-          poolId: id,
+          poolId: _id,
           account: this._walletManager.getActiveAccount()?.address
         },
-        fetchPolicy
+        fetchPolicy: _fetchPolicy
       });
       const pool = poolQuery.data.pool as unknown as Pool;
       return {
@@ -48,24 +48,24 @@ export class PoolService {
     }
   }
 
-  async depositAsync(id: number, tokenId: string, amount: string): Promise<boolean> {
+  async depositAsync(_id: number, _tokenId: string, _amount: string): Promise<boolean> {
     const result = await this._apollo.mutate<Deposit, DepositVariables>({
       mutation: DEPOSIT_MUTATION,
       variables: {
-        id: id.toString(),
-        tokenId,
-        amount
+        id: _id.toString(),
+        tokenId: _tokenId,
+        amount: _amount
       }
     });
     return Boolean(result.data?.deposit ?? false);
   }
 
-  async withdrawAsync(id: number, amount: string): Promise<boolean> {
+  async withdrawAsync(_id: number, _amount: string): Promise<boolean> {
     const result = await this._apollo.mutate<Withdraw, WithdrawVariables>({
       mutation: WITHDRAW_MUTATION,
       variables: {
-        id: id.toString(),
-        amount
+        id: _id.toString(),
+        amount: _amount
       }
     });
     return Boolean(result.data?.withdraw ?? false);

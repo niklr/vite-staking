@@ -1,12 +1,16 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Input, InputAdornment, InputLabel } from '@mui/material';
 import BigNumber from 'bignumber.js';
 import React, { useCallback, useEffect, useState } from 'react';
+import { getAccountService } from '../../../../services/account.service';
 import { getPoolService } from '../../../../services/pool.service';
 import { CommonUtil } from '../../../../util/common.util';
+import { getLogger } from '../../../../util/logger';
 import { SnackbarUtil } from '../../../../util/snackbar.util';
 import { Pool, PoolDialogState } from '../../../../util/types';
 import { ViteUtil } from '../../../../util/vite.util';
 import { ClickOnceButton } from '../../../common/components/click-once-button';
+
+const logger = getLogger();
 
 interface Props {
   pool: Pool
@@ -24,6 +28,7 @@ export const PoolWithdrawDialog: React.FC<Props> = (props: Props) => {
 
   const [amount, setAmount] = useState<string>(getStakedAmount());
   const [disabled, setDisabled] = useState<boolean>(false);
+  const accountService = getAccountService();
   const poolService = getPoolService();
 
   const changeAmount = (amount: string) => {
@@ -36,6 +41,16 @@ export const PoolWithdrawDialog: React.FC<Props> = (props: Props) => {
       changeAmount(getStakedAmount())
     }
   }, [props.state, getStakedAmount])
+
+  useEffect(() => {
+    async function getBalanceAsync() {
+      const balance = await accountService.getBalanceAsync();
+      logger.info("Account balance:", balance.toString())();
+    }
+    if (props.state.open) {
+      getBalanceAsync();
+    }
+  }, [props.state, accountService])
 
   const handleClose = () => {
     props.setState({
