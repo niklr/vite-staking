@@ -45,6 +45,7 @@
     "eject": "react-scripts eject",
     "codegen": "apollo codegen:generate --localSchemaFile=client-schema.graphql --target=typescript --tagName=gql"
   },
+  "homepage": ".",
   "eslintConfig": {
     "extends": [
       "react-app",
