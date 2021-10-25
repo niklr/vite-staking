@@ -1,8 +1,52 @@
 # vite-staking
 
+Staking pools distribute a chosen native Vite token as a reward to users staking another chosen native Vite token. The total reward rate is fixed, and staking users earn rewards proportional to the amount they stake. Contract can be found [here](https://github.com/weserickson/vite-staking-pools).
+
 <h1 align="center">
 	<img src="assets/gui.png" alt="VITE Staking Pools">
 </h1>
+
+## Setup
+
+First, download & install [Node](https://nodejs.org/en/) v14+ and [Yarn](https://yarnpkg.com/getting-started/install).
+
+To install all dependencies just run the following command in the `app` folder:
+
+```bash
+yarn install
+```
+
+- create .env file based on [.env.example](./app/.env.example)
+
+### Start
+
+Starts the client at http://localhost:3000
+
+```bash
+yarn start
+```
+
+### GraphQL codegen
+
+This command has to be executed whenever the GraphQL scheme changes.
+
+```bash
+yarn codegen
+```
+
+### Build
+
+Builds the client into `build` folder.
+
+```bash
+yarn build
+```
+
+### Test
+
+```bash
+yarn test
+```
 
 ## Notes
 
@@ -31,6 +75,8 @@ Sample response from getUserInfo:
   '0' // rewardDebt
 ]
 ```
+
+Get token information from ViteX API
 
 https://vitex.vite.net/api/v1/token/detail?tokenId=tti_5649544520544f4b454e6e40
 
