@@ -53,7 +53,7 @@ export const Rewards: React.FC<Props> = (props: Props) => {
   }, [pool, props]);
 
   useEffect(() => {
-    let interval = setInterval(async () => {
+    let interval = setInterval(() => {
       const height = networkManager.networkHeight;
       if (pool) {
         const updated = poolService.updateRewardPerToken(pool, height);
@@ -64,7 +64,7 @@ export const Rewards: React.FC<Props> = (props: Props) => {
           setPool(newPool);
         }
       }
-    }, 1000)
+    }, 3000);
     return () => {
       clearInterval(interval);
     }

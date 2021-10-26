@@ -2,6 +2,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, Link, Paper, Skeleton, styled, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { getNetworkManager } from '../../../../common/network';
 import { getPoolService } from '../../../../services/pool.service';
 import { getEmitter } from '../../../../util/emitter.util';
 import { getLogger } from "../../../../util/logger";
@@ -33,19 +34,30 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
     type: PoolDialogType.DEPOSIT,
     open: false
   });
+  const [canStake, setCanStake] = useState<boolean>(false);
   const [canClaim, setCanClaim] = useState<boolean>(false);
   const [canWithdraw, setCanWithdraw] = useState<boolean>(false);
-  const poolService = getPoolService();
   const emitter = getEmitter();
+  const poolService = getPoolService();
+  const networkManager = getNetworkManager();
 
   useEffect(() => {
     if (props.pool) {
       logger.info(`Pool loaded: ${props.pool?.id}`)();
-      setCanWithdraw(!!props.pool && !!props.account && (props.pool.userInfo?.stakingBalance.gt(0) ?? false))
+      setCanWithdraw(!!props.pool && !!props.account && (props.pool.userInfo?.stakingBalance.gt(0) ?? false));
     } else {
       setCanWithdraw(false);
     }
   }, [props.pool, props.account]);
+
+  useEffect(() => {
+    let interval = setInterval(() => {
+      setCanStake(!!props.pool && !!props.account && networkManager.networkHeight.gte(props.pool.startBlock));
+    }, 500);
+    return () => {
+      clearInterval(interval);
+    }
+  }, [props.pool, props.account, networkManager]);
 
   const showApr = (): Maybe<string> => {
     if (!props.pool || !props.pool.apr) {
@@ -158,14 +170,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                   )}
                 </Grid>
                 <Grid item>
-                  <Typography variant="body2" color="text.secondary">
-                    Ends in
-                  </Typography>
-                  {!props.pool ? (
-                    <Skeleton animation="wave" height={25} width="90px" />
-                  ) : (
-                    <PoolCountdown pool={props.pool} />
-                  )}
+                  <PoolCountdown pool={props.pool} />
                 </Grid>
               </Grid>
             </Grid>
@@ -235,7 +240,7 @@ export const PoolListItem: React.FC<Props> = (props: Props) => {
                       </TransparentPaper>
                     </Grid>
                     <Grid item xs={12} md sx={{ display: "flex", alignItems: "center" }}>
-                      <Button variant="contained" size="large" fullWidth onClick={handleClickDeposit} disabled={!props.pool || !props.account}>
+                      <Button variant="contained" size="large" fullWidth onClick={handleClickDeposit} disabled={!canStake}>
                         Stake
                       </Button>
                     </Grid>

@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { getNetworkManager } from "../../../../common/network";
@@ -10,16 +10,24 @@ interface Props {
 }
 
 export const PoolCountdown: React.FC<Props> = (props: Props) => {
+  const [hasStarted, setHasStarted] = useState<boolean>(false);
   const [remainingBlocks, setRemainingBlocks] = useState<BigNumber>(new BigNumber(0));
   const [countdown, setCountdown] = useState<string>("");
   const moment = useMemo(() => getMomentFactory().create(), []);
   const networkManager = getNetworkManager();
 
   useEffect(() => {
-    let interval = setInterval(async () => {
+    let interval = setInterval(() => {
       const height = networkManager.networkHeight;
-      if (props.pool?.endBlock && height.gte(props.pool.startBlock)) {
-        const remainingBlocks = props.pool.endBlock.minus(height);
+      if (props.pool?.endBlock) {
+        let remainingBlocks = new BigNumber(0);
+        if (height.lte(props.pool.startBlock)) {
+          setHasStarted(false);
+          remainingBlocks = props.pool.startBlock.minus(height);
+        } else {
+          setHasStarted(true);
+          remainingBlocks = props.pool.endBlock.minus(height);
+        }
         if (remainingBlocks.gte(0)) {
           setRemainingBlocks(remainingBlocks);
           const duration = moment.getDuration(remainingBlocks.toNumber());
@@ -37,7 +45,7 @@ export const PoolCountdown: React.FC<Props> = (props: Props) => {
           setCountdown("");
         }
       }
-    }, 1000)
+    }, 500);
     return () => {
       clearInterval(interval);
     }
@@ -45,15 +53,24 @@ export const PoolCountdown: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      {remainingBlocks.gt(0) ? (
-        <Typography variant="subtitle1">
-          {remainingBlocks.toString()} Blocks
-          <Typography variant="body2" color="text.secondary" display="inline" sx={{ ml: 1 }}>
-            {countdown}
-          </Typography>
-        </Typography>
+      <Typography variant="body2" color="text.secondary">
+        {hasStarted ? 'Ends in' : 'Starts in'}
+      </Typography>
+      {!props.pool ? (
+        <Skeleton animation="wave" height={25} width="90px" />
       ) : (
-        <Typography variant="subtitle1">-</Typography>
+        <>
+          {remainingBlocks.gt(0) ? (
+            <Typography variant="subtitle1">
+              {remainingBlocks.toString()} Blocks
+              <Typography variant="body2" color="text.secondary" display="inline" sx={{ ml: 1 }}>
+                {countdown}
+              </Typography>
+            </Typography>
+          ) : (
+            <Typography variant="subtitle1">-</Typography>
+          )}
+        </>
       )}
     </>
   );
