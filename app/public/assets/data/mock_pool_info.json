@@ -4,7 +4,7 @@
     "rewardTokenId": "tti_5649544520544f4b454e6e40",
     "totalStakingBalance": "1000000000000000000000",
     "totalRewardBalance": "12345678999999999999",
-    "startBlock": "0",
+    "startBlock": "10",
     "endBlock": "7930500",
     "latestRewardBlock": "0",
     "rewardPerPeriod": "1250000000000000",

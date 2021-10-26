@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js";
 import React, { useEffect, useState } from "react";
+import { getNetworkManager } from "../../../../common/network";
 import { getPoolService } from "../../../../services/pool.service";
-import { getEmitter } from "../../../../util/emitter.util";
-import { GlobalEvent, Pool } from "../../../../util/types";
+import { Pool } from "../../../../util/types";
 import { ViteUtil } from "../../../../util/vite.util";
 
 interface Props {
@@ -15,8 +15,8 @@ interface Props {
 export const Rewards: React.FC<Props> = (props: Props) => {
   const [pool, setPool] = useState<Maybe<Pool>>(props.pool);
   const [rewardTokens, setRewardTokens] = useState<BigNumber>(new BigNumber(0));
-  const emitter = getEmitter();
   const poolService = getPoolService();
+  const networkManager = getNetworkManager();
 
   useEffect(() => {
     setPool(props.pool);
@@ -53,7 +53,8 @@ export const Rewards: React.FC<Props> = (props: Props) => {
   }, [pool, props]);
 
   useEffect(() => {
-    const handleEvent = (height: BigNumber) => {
+    let interval = setInterval(async () => {
+      const height = networkManager.networkHeight;
       if (pool) {
         const updated = poolService.updateRewardPerToken(pool, height);
         if (updated) {
@@ -63,12 +64,11 @@ export const Rewards: React.FC<Props> = (props: Props) => {
           setPool(newPool);
         }
       }
-    }
-    emitter.on(GlobalEvent.NetworkBlockHeightChanged, handleEvent);
+    }, 1000)
     return () => {
-      emitter.off(GlobalEvent.NetworkBlockHeightChanged, handleEvent);
-    };
-  }, [emitter, pool, poolService]);
+      clearInterval(interval);
+    }
+  }, [pool, poolService, networkManager]);
 
   const showRewardTokens = (decimals: number): string => {
     if (!pool) {

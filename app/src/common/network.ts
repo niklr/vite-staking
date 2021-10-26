@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { getLogger } from "../util/logger";
 import { Network } from "../util/types";
 import { Networks } from "./constants";
@@ -5,8 +6,21 @@ import { Networks } from "./constants";
 const logger = getLogger();
 
 export class NetworkManager {
+  private _networkHeight: BigNumber;
   private _network?: Maybe<Network>;
   private _setNetworkCallback?: (network?: Maybe<Network>) => void;
+
+  constructor() {
+    this._networkHeight = new BigNumber(0);
+  }
+
+  set networkHeight(height: BigNumber) {
+    this._networkHeight = height;
+  }
+
+  get networkHeight(): BigNumber {
+    return this._networkHeight;
+  }
 
   set onSetNetworkCallback(cb: (network?: Maybe<Network>) => void) {
     this._setNetworkCallback = cb;

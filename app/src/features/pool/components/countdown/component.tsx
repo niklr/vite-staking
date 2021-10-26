@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useEffect, useMemo, useState } from "react";
+import { getNetworkManager } from "../../../../common/network";
 import { getMomentFactory } from "../../../../factories";
-import { getEmitter } from "../../../../util/emitter.util";
-import { GlobalEvent, Pool } from "../../../../util/types";
+import { Pool } from "../../../../util/types";
 
 interface Props {
   pool: Maybe<Pool>
@@ -12,12 +12,13 @@ interface Props {
 export const PoolCountdown: React.FC<Props> = (props: Props) => {
   const [remainingBlocks, setRemainingBlocks] = useState<BigNumber>(new BigNumber(0));
   const [countdown, setCountdown] = useState<string>("");
-  const emitter = getEmitter();
-  const moment = useMemo(() => getMomentFactory().create(), [])
+  const moment = useMemo(() => getMomentFactory().create(), []);
+  const networkManager = getNetworkManager();
 
   useEffect(() => {
-    const handleEvent = (height: BigNumber) => {
-      if (props.pool?.endBlock) {
+    let interval = setInterval(async () => {
+      const height = networkManager.networkHeight;
+      if (props.pool?.endBlock && height.gte(props.pool.startBlock)) {
         const remainingBlocks = props.pool.endBlock.minus(height);
         if (remainingBlocks.gte(0)) {
           setRemainingBlocks(remainingBlocks);
@@ -36,12 +37,11 @@ export const PoolCountdown: React.FC<Props> = (props: Props) => {
           setCountdown("");
         }
       }
-    }
-    emitter.on(GlobalEvent.NetworkBlockHeightChanged, handleEvent)
+    }, 1000)
     return () => {
-      emitter.off(GlobalEvent.NetworkBlockHeightChanged, handleEvent)
-    };
-  }, [emitter, moment, props.pool]);
+      clearInterval(interval);
+    }
+  }, [props.pool, moment, networkManager]);
 
   return (
     <>
