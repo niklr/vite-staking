@@ -21,7 +21,7 @@ interface Props {
 export const PoolWithdrawDialog: React.FC<Props> = (props: Props) => {
   const getStakedAmount = useCallback(() => {
     if (props.pool.userInfo?.stakingBalance.gt(0)) {
-      return ViteUtil.formatBigNumber(props.pool.userInfo.stakingBalance, props.pool.stakingToken.decimals, 18)
+      return ViteUtil.formatBigNumber(props.pool.userInfo.stakingBalance, props.pool.stakingToken.decimals, 18).replace(',', '')
     }
     return ""
   }, [props.pool])
